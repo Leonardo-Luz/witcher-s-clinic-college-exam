@@ -58,7 +58,7 @@ int TreatmentRegister(Treatment treatment)
 int WitcherRemove(int code)
 {
     int i;
-    for (i = 0; i < code; i++)
+    for (i = 0; i < qtyWitchers; i++)
     {
         if(witchers[i].code == code)
         {
@@ -71,7 +71,7 @@ int WitcherRemove(int code)
 int PotionRemove(int code)
 {
     int i;
-    for (i = 0; i < code; i++)
+    for (i = 0; i < qtyPotions; i++)
     {
         if(potions[i].code == code)
         {
@@ -84,7 +84,7 @@ int PotionRemove(int code)
 int PatiantRemove(int code)
 {
     int i;
-    for (i = 0; i < code; i++)
+    for (i = 0; i < qtyPatiants; i++)
     {
         if(patiants[i].code == code)
         {
@@ -97,7 +97,7 @@ int PatiantRemove(int code)
 int TreatmentRemove(int code)
 {
     int i;
-    for (i = 0; i < code; i++)
+    for (i = 0; i < qtyTreatments; i++)
     {
         if(treatments[i].code == code)
         {
@@ -109,43 +109,43 @@ int TreatmentRemove(int code)
 
 
 //receive
-Witcher ReceiveWitcher(int indice)
+Witcher GetWitcher(int indice)
 {
     return witchers[indice];
 }
 
-Potion ReceivePotion(int indice)
+Potion GetPotion(int indice)
 {
     return potions[indice];
 }
-Patiant RecevePatiant(int indice)
+Patiant GetPatiant(int indice)
 {
     return patiants[indice];
 }
 
-Treatment ReceiveTreatment(int indice)
+Treatment GetTreatment(int indice)
 {
     return treatments[indice];
 }
 
 
 //qty receive
-int QtyRegisteredWitcher()
+int GetQtyWitcher()
 {
     return qtyWitchers;
 }
 
-int QtyRegisteredPotion()
+int GetQtyPotion()
 {
     return qtyPotions;
 }
 
-int QtyRegisteredPatiant()
+int GetQtyPatiant()
 {
     return qtyPatiants;
 }
 
-int QtyRegisteredTreatment()
+int GetQtyTreatment()
 {
     return qtyTreatments;
 }
