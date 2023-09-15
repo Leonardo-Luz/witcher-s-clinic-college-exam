@@ -1,2 +1,2 @@
-# witcher-clinic-college-exam
+# witcher-s-clinic-college-exam
 new repository
