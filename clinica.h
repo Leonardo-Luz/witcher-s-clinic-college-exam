@@ -40,12 +40,12 @@ int PotionRemove(int code);
 int PatiantRemove(int code);
 int TreatmentRemove(int code);
 
-Witcher ReceiveWitcher(int indice);
-Potion ReceivePotion(int indice);
-Patiant RecevePatiant(int indice);
-Treatment ReceiveTreatment(int indice);
+Witcher GetWitcher(int indice);
+Potion GetPotion(int indice);
+Patiant GetPatiant(int indice);
+Treatment GetTreatment(int indice);
 
-int QtyRegisteredWitcher();
-int QtyRegisteredPotion();
-int QtyRegisteredPatiant();
-int QtyRegisteredTreatment();
+int GetQtyWitcher();
+int GetQtyPotion();
+int GetQtyPatiant();
+int GetQtyTreatment();
