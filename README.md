@@ -41,13 +41,15 @@ O que o programa deverá fazer:
 14. Apagar tratamento
 
 O programa deverá prever erros e fazer validações para o bom funcionamento da clínica:
-• Nunca acessar uma posição de array inválida (índices negativos ou maiores que o tamanho do array)
-• Cadastrar bruxo apenas com códigos válidos (0 até tamanho do array-1);
-• Cadastrar poção apenas com códigos válidos (0 até tamanho do array-1);
-• Cadastrar paciente apenas com códigos válidos (0 até tamanho do array-1);
-• Iniciar tratamento apenas para bruxo cadastrados;
-• Iniciar tratamento apenas para poção cadastradas;
-• Iniciar tratamento apenas para paciente cadastrados;
-• Não sobrescrever tratamentos;
-• Listar apenas os tratamentos existentes;
-• Não apagar bruxo, poção ou paciente se existir um tratamento relacionado
+
+- Nunca acessar uma posição de array inválida (índices negativos ou maiores que o tamanho do array);
+- Cadastrar bruxo apenas com códigos válidos (0 até tamanho do array-1); 
+- Cadastrar poção apenas com códigos válidos (0 até tamanho do array-1);
+- Cadastrar paciente apenas com códigos válidos (0 até tamanho do array-1);
+- Iniciar tratamento apenas para bruxo cadastrados;
+- Iniciar tratamento apenas para poção cadastradas;
+- Iniciar tratamento apenas para paciente cadastrados;
+- Não sobrescrever tratamentos;
+- Listar apenas os tratamentos existentes;
+- Não apagar bruxo, poção ou paciente se existir um tratamento relacionado;
+
