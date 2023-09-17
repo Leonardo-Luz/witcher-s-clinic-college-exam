@@ -111,20 +111,28 @@ int TreatmentRemove(int code)
 //receive
 Witcher GetWitcher(int indice)
 {
+    if(indice >= MAX_WITCHER) return;
+    
     return witchers[indice];
 }
 
 Potion GetPotion(int indice)
 {
+    if(indice >= MAX_POTION) return;
+
     return potions[indice];
 }
 Patiant GetPatiant(int indice)
 {
+    if(indice >= MAX_PATIANT) return;
+
     return patiants[indice];
 }
 
 Treatment GetTreatment(int indice)
 {
+    if(indice >= MAX_TREATMENT) return;
+
     return treatments[indice];
 }
 
@@ -148,4 +156,19 @@ int GetQtyPatiant()
 int GetQtyTreatment()
 {
     return qtyTreatments;
+}
+
+int TreatmentModification( Treatment treatment )
+{
+    int i;
+    for (i = 0; i < qtyTreatments; i++)
+    if(treatments[i].code == treatment.code)
+    {
+        treatments[i].duration = treatment.duration;
+        treatments[i].dosage = treatment.dosage;
+
+        return 1;
+    }
+
+    return 0;
 }
