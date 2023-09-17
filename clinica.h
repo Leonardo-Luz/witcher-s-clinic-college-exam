@@ -41,7 +41,7 @@ int PatiantRemove(int code);
 int TreatmentRemove(int code);
 
 Witcher GetWitcher(int indice);
-Potion GetPotion(int indice);
+Potion GetPotion(int indice); 
 Patiant GetPatiant(int indice);
 Treatment GetTreatment(int indice);
 
@@ -49,3 +49,5 @@ int GetQtyWitcher();
 int GetQtyPotion();
 int GetQtyPatiant();
 int GetQtyTreatment();
+
+int TreatmentModification( Treatment treatment );

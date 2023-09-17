@@ -5,29 +5,27 @@
 
 #include "clinica.h"
 
-int cases;
 
 void Menu()
 {
-	printf("Menu: \n");
-	printf("0  - Sair \n");
-	printf("1  - Listar Bruxos \n");
-	printf("2  - Cadastrar bruxo pelo codigo \n");
-	printf("3  - Excluir bruxo pelo codigo; \n");
-	printf("4  - Listar Pocoes \n");
-	printf("5  - Cadastrar pocao pelo codigo \n");
-	printf("6  - Excluir pocao pelo codigo \n");
-	printf("7  - Listar Pacientes \n");
-	printf("8  - Cadastrar paciente pelo codigo \n");
-	printf("9  - Excluir paciente pelo codigo \n");
-	printf("10 - Listar tratamentos do paciente \n");
-	printf("11 - Listar pacientes do bruxo \n");
-	printf("12 - Iniciar tratamento \n");
-	printf("13 - Ampliar tratamento \n");
-	printf("14 - Apagar tratamento \n \n");
+	printf("\nMenu: ");
+	printf("\n0  - Sair ");
+	printf("\n1  - Listar Bruxos ");
+	printf("\n2  - Cadastrar bruxo pelo codigo ");
+	printf("\n3  - Excluir bruxo pelo codigo; ");
+	printf("\n4  - Listar Pocoes ");
+	printf("\n5  - Cadastrar pocao pelo codigo ");
+	printf("\n6  - Excluir pocao pelo codigo ");
+	printf("\n7  - Listar Pacientes ");
+	printf("\n8  - Cadastrar paciente pelo codigo ");
+	printf("\n9  - Excluir paciente pelo codigo ");
+	printf("\n10 - Listar tratamentos do paciente ");
+	printf("\n11 - Listar pacientes do bruxo ");
+	printf("\n12 - Iniciar tratamento ");
+	printf("\n13 - Ampliar tratamento ");
+	printf("\n14 - Apagar tratamento");
 	
-	printf("-> ");
-	scanf("%d", &cases);	
+	printf("\n-> ");
 }
 
 void WitchersList()
@@ -192,14 +190,194 @@ void DeletePatiant()
 	else printf("\nErro na remocao. \nTente novamente!");
 }
 
+void TreatmentList()
+{
+	int i;
+
+	printf("\n\nCode - Code Bruxo - Code Pocao - Code Paciente - Duracao - Dosagem ");
+	for (i = 0; i < GetQtyPatiant(); i++)
+	{
+		Treatment treatment = GetTreatment(i);
+
+		printf("\n %d - %d - %d - %d - %d - %d ", 
+			&treatment.code,
+			&treatment.witcherCode,
+			&treatment.potionCode,
+			&treatment.patiantCode,
+			&treatment.duration,
+			&treatment.dosage			
+		);
+	}
+	printf("\n");
+}
+
+void WitcherPatiantsList()
+{
+	int i;
+	int code;
+
+	printf("Digite o codigo do bruxo: \n");
+	printf("-> ");
+	scanf("%d", &code);
+
+
+	printf("\n\nCode - Nome - Idade - Altura");
+
+	for(i = 0; i < GetQtyWitcher(); i++)
+	{
+		if(GetTreatment(i).witcherCode == code)
+		for (i = 0; i < GetQtyPatiant(); i++)
+		{
+			Patiant patiant = GetPatiant(i);
+
+			if(GetTreatment(i).patiantCode == patiant.code)
+				printf("\n %d - %s - %d - %f ", 
+					&patiant.code,
+					&patiant.name,
+					&patiant.age,
+					&patiant.height			
+				);
+		}
+	}
+	printf("\n");
+}
+
+void TreatmentRegistration()
+{
+	if(!GetQtyPatiant() || !GetQtyPotion() || !GetQtyWitcher())
+	{
+		printf("Incapaz de registrar tratamento! \n");
+		return;
+	}
+
+	int i;
+	Treatment treatment;
+
+	printf("Digite o codigo do tratamento: \n");
+	printf("-> ");
+	scanf("%d", &treatment.code);
+
+
+	printf("Digite o codigo do bruxo: \n");
+	printf("-> ");
+	scanf("%d", &treatment.witcherCode);
+
+	for(i = 0; i < GetQtyWitcher(); i++)	
+	if(GetWitcher(i).code == treatment.witcherCode)
+	{
+		break;
+	}
+	else if(i == GetQtyWitcher() - 1)
+	{
+		printf("Codigo invalido! \n");
+		return;	
+	}
+
+	printf("Digite o codigo da pocao: \n");
+	printf("-> ");
+	scanf("%d", &treatment.potionCode);
+
+	for(i = 0; i < GetQtyPotion(); i++)	
+	if(GetPotion(i).code == treatment.potionCode)
+	{
+		break;
+	}
+	else if(i == GetQtyPotion() - 1)
+	{
+		printf("Codigo invalido! \n");
+		return;	
+	}
+
+	printf("Digite o codigo do paciente: \n");
+	printf("-> ");
+	scanf("%d", &treatment.patiantCode);
+
+	for(i = 0; i < GetQtyPatiant(); i++)	
+	if(GetPatiant(i).code == treatment.patiantCode)
+	{
+		break;
+	}
+	else if(i == GetQtyPatiant() - 1)
+	{
+		printf("Codigo invalido! \n");
+		return;	
+	}
+
+	printf("Digite a duracao: \n");
+	printf("-> ");
+	scanf("%d", &treatment.duration);
+
+	printf("Digite a dosagem: \n");
+	printf("-> ");
+	scanf("%d", &treatment.dosage);
+
+	int successful = TreatmentRegister(treatment);
+
+	if(successful) printf("\nTratamento Cadastrado com sucesso!");
+	else printf("\nErro no cadastro. \nTente novamente!");
+}
+
+void TreatmentApliation()
+{
+	int code;
+
+	printf("\nDigite o codigo do tratamento:");
+	printf("\n-> ");
+	scanf("%d", &code);
+
+	Treatment treatment;
+	
+	int i;
+	for(i = 0; i < GetQtyTreatment(); i++)	
+	if(GetTreatment(i).code == code)
+	{		
+		treatment = GetTreatment(i);
+		break;
+	}
+	else if(i == GetQtyTreatment() - 1)
+	{
+		printf("\nCodigo invalido!");
+		return;	
+	}
+
+	printf("\nDigite a nova duracao:");
+	printf("\n-> ");
+	scanf("%d", &treatment.duration);
+
+	printf("\nDigite a nova dosagem:");
+	printf("\n-> ");
+	scanf("%d", &treatment.dosage);
+
+	int successful = TreatmentModification(treatment);
+
+	if(successful) printf("\nTratamento Ampliado com sucesso!");
+	else printf("\nErro no amplio. \nTente novamente!");
+
+}
+
+void DeleteTreatment()
+{
+	int code;
+	printf("\nDigite o codigo do Tratamento que voce deseja deletar: ");
+	printf("-> ");
+	scanf("%d", &code);
+
+	int successful = TreatmentRemove(code);
+
+	if(successful) printf("\nTratamento Removido com sucesso!");
+	else printf("\nErro na remocao. \nTente novamente!");
+}
 
 int main(int argc, char *argv[])
 {
 	setlocale(LC_ALL, "Portuguese");
 	
+	int cases;
+	
 	do
 	{
 		Menu();
+		scanf("%d", &cases);	
 		
 		switch(cases)
 		{
@@ -240,25 +418,26 @@ int main(int argc, char *argv[])
 				break;
 			
 			case 10:
-				// ListarTratamentos();
+				TreatmentList();
 				break;
 			
 			case 11:
-				// ListarPacientesDoBruxo();
+				WitcherPatiantsList();
 				break;
 			
 			case 12:
-				// IniciarTratamento();
+				TreatmentRegistration();
 				break;
 				
 			case 13:
-				// AmpliarTratamento();
+				TreatmentApliation();
 				break;
 			
 			case 14:
-				// ApagarTratamento();
+				DeleteTreatment();
 				break;
 		}
 	} while(cases);
+	
 	return 0;
 }
