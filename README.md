@@ -26,21 +26,24 @@ Bruxo que prescreveu o tratamento, Paciente que realizará o tratamento, Medicam
 de tratamento, dosagem diária (quantidade de vezes no dia)
 
 O que o programa deverá fazer:
-0. Sair
-1. Listar Bruxos
-2. Cadastrar bruxo pelo código;
-3. Excluir bruxo pelo código;
-4. Listar Poções
-5. Cadastrar poção pelo código;
-6. Excluir poção pelo código;
-7. Listar Pacientes
-8. Cadastrar paciente pelo código;
-9. Excluir paciente pelo código;
-10. Listar tratamentos do paciente
-11. Listar pacientes do bruxo
-12. Iniciar tratamento
-13. Ampliar tratamento
-14. Apagar tratamento
+<ol start="0">
+ <li>Sair</li>
+ <li>Listar Bruxos</li>
+ <li>Cadastrar bruxo pelo código</li>
+ <li>Excluir bruxo pelo código</li>
+ <li>Listar Poções</li>
+ <li>Cadastrar poção pelo código</li>
+ <li>Excluir poção pelo código</li>
+ <li>Listar Pacientes</li>
+ <li>Cadastrar paciente pelo código</li>
+ <li>Excluir paciente pelo código</li>
+ <li>Listar tratamentos do paciente</li>
+ <li>Listar pacientes do bruxo</li>
+ <li>Iniciar tratamento</li>
+ <li>Ampliar tratamento</li>
+ <li>Apagar tratamento</li>
+</ol>
+
 
 O programa deverá prever erros e fazer validações para o bom funcionamento da clínica:
 
