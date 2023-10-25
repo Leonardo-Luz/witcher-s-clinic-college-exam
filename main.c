@@ -5,26 +5,40 @@
 
 #include "clinica.h"
 
-
-void Menu()
+void MenuInicial()
 {
 	printf("\nMenu: ");
-	printf("\n0  - Sair ");
-	printf("\n1  - Listar Bruxos ");
-	printf("\n2  - Cadastrar bruxo pelo codigo ");
-	printf("\n3  - Excluir bruxo pelo codigo; ");
-	printf("\n4  - Listar Pocoes ");
-	printf("\n5  - Cadastrar pocao pelo codigo ");
-	printf("\n6  - Excluir pocao pelo codigo ");
-	printf("\n7  - Listar Pacientes ");
-	printf("\n8  - Cadastrar paciente pelo codigo ");
-	printf("\n9  - Excluir paciente pelo codigo ");
-	printf("\n10 - Listar tratamentos do paciente ");
-	printf("\n11 - Listar pacientes do bruxo ");
-	printf("\n12 - Iniciar tratamento ");
-	printf("\n13 - Ampliar tratamento ");
-	printf("\n14 - Apagar tratamento");
+	printf("\n0  - Sair");
+	printf("\n1  - Bruxo");
+	printf("\n2  - Pocao");
+	printf("\n3  - Paciente");
+	printf("\n4  - Tratamento");
 	
+	printf("\n-> ");
+}
+
+void MenuAvancado()
+{
+	printf("\nMenu: ");
+	printf("\n0  - Sair");
+	printf("\n1  - Listar");
+	printf("\n2  - Cadastrar");
+	printf("\n3  - Alterar");
+	printf("\n4  - Excluir");
+	
+	printf("\n-> ");
+}
+
+void MenuTratamento()
+{
+	printf("\nMenu: ");
+	printf("\n0  - Sair");
+	printf("\n1  - Listar tratamentos do paciente");
+	printf("\n2  - Listar tratamentos do bruxo");
+	printf("\n3  - Iniciar tratamento");
+	printf("\n4  - Ampliar tratamento");
+	printf("\n6  - Excluir tratamento");
+			
 	printf("\n-> ");
 }
 
@@ -32,15 +46,21 @@ void WitchersList()
 {
 	int i;
 
+	if(GetQtyWitcher() == 0)
+	{
+		printf("\nSem Bruxo!");
+		return;
+	}
+
 	printf("\n\nCode - Nome - Especialidade");
 	for (i = 0; i < GetQtyWitcher(); i++)
 	{
 		Witcher witcher = GetWitcher(i);
 
 		printf("\n %d - %s - %s", 
-			&witcher.code,
-			&witcher.name,
-			&witcher.especiality
+			witcher.code,
+			witcher.name,
+			witcher.especiality
 		);
 	}
 }
@@ -68,7 +88,13 @@ void WitcherRegistration()
 }
 
 void DeleteWitcher()
-{
+{	
+	if(GetQtyWitcher() == 0)
+	{
+		printf("\nSem Bruxo!");
+		return;
+	}	
+	
 	int code;
 	printf("\nDigite o codigo do bruxo que voce deseja deletar: ");
 	printf("-> ");
@@ -84,15 +110,21 @@ void PotionsList()
 {
 	int i;
 
+	if(GetQtyPotion() == 0)
+	{
+		printf("\nSem Pocao!");
+		return;
+	}
+
 	printf("\n\nCode - Nome - Tipo");
 	for (i = 0; i < GetQtyPotion(); i++)
 	{
 		Potion potion = GetPotion(i);
 
 		printf("\n %d - %s - %s", 
-			&potion.code,
-			&potion.name,
-			&potion.type
+			potion.code,
+			potion.name,
+			potion.type
 		);
 	}
 }
@@ -136,16 +168,22 @@ void PatiantsList()
 {
 	int i;
 
+	if(GetQtyPatiant() == 0)
+	{
+		printf("\nSem Pacientes!");
+		return;
+	}
+
 	printf("\n\nCode - Nome - Idade - Altura");
 	for (i = 0; i < GetQtyPatiant(); i++)
 	{
 		Patiant patiant = GetPatiant(i);
 
 		printf("\n %d - %s - %d - %f ", 
-			&patiant.code,
-			&patiant.name,
-			&patiant.age,
-			&patiant.height			
+			patiant.code,
+			patiant.name,
+			patiant.age,
+			patiant.height			
 		);
 	}
 	printf("\n");
@@ -194,18 +232,24 @@ void TreatmentList()
 {
 	int i;
 
+	if(GetQtyTreatment() == 0)
+	{
+		printf("\nSem Tratamentos!");
+		return;
+	}
+
 	printf("\n\nCode - Code Bruxo - Code Pocao - Code Paciente - Duracao - Dosagem ");
-	for (i = 0; i < GetQtyPatiant(); i++)
+	for (i = 0; i < GetQtyTreatment(); i++)
 	{
 		Treatment treatment = GetTreatment(i);
 
 		printf("\n %d - %d - %d - %d - %d - %d ", 
-			&treatment.code,
-			&treatment.witcherCode,
-			&treatment.potionCode,
-			&treatment.patiantCode,
-			&treatment.duration,
-			&treatment.dosage			
+			treatment.code,
+			treatment.witcherCode,
+			treatment.potionCode,
+			treatment.patiantCode,
+			treatment.duration,
+			treatment.dosage			
 		);
 	}
 	printf("\n");
@@ -215,6 +259,12 @@ void WitcherPatiantsList()
 {
 	int i;
 	int code;
+
+	if(GetQtyTreatment() == 0)
+	{
+		printf("\nSem Tratamentos!");
+		return;
+	}
 
 	printf("Digite o codigo do bruxo: \n");
 	printf("-> ");
@@ -376,68 +426,111 @@ int main(int argc, char *argv[])
 	
 	do
 	{
-		Menu();
+		MenuInicial();
 		scanf("%d", &cases);	
 		
 		switch(cases)
 		{
 			case 1:
-				WitchersList();
-				break;
+				do
+				{
+					MenuAvancado();
+					scanf("%d", &cases);
+
+					switch(cases)
+					{
+						case 1:
+							WitchersList();
+							break;
+						case 2:
+							WitcherRegistration();
+							break;
+						case 3:
+							break;
+						case 4:
+							DeleteWitcher();
+							break;
+					}
+				}while(cases);	
 				
+				cases = -1;
+				break;
 			case 2:
-				WitcherRegistration();
+				do
+				{
+					MenuAvancado();
+					scanf("%d", &cases);	
+					
+					switch(cases)
+					{
+						case 1:
+							PotionsList();
+							break;
+						case 2:
+							PotionRegistration();
+							break;
+						case 3:
+							break;
+						case 4:
+							DeletePotion();
+							break;
+					}			
+				}while(cases);	
+				cases = -1;
+
 				break;
-				
 			case 3:
-				DeleteWitcher();		
-				break;
+				do
+				{
+					MenuAvancado();		
+					scanf("%d", &cases);	
+					switch(cases)
+					{
+						case 1:
+							PatiantsList();
+							break;
+						case 2:
+							PatiantRegistration();
+							break;
+						case 3:
+							break;
+						case 4:
+							DeleteTreatment();
+							break;
+					}									
+				}while(cases);
 				
+				cases = -1;
+				break;
 			case 4:
-				PotionsList();
-				break;
-				
-			case 5:
-				PotionRegistration();
-				break;
-				
-			case 6:
-				DeletePotion();
-				break;
-				
-			case 7:
-				PatiantsList();
-				break;
-			
-			case 8:
-				PatiantRegistration();
-				break;
-			
-			case 9:
-				DeletePatiant();
-				break;
-			
-			case 10:
-				TreatmentList();
-				break;
-			
-			case 11:
-				WitcherPatiantsList();
-				break;
-			
-			case 12:
-				TreatmentRegistration();
-				break;
-				
-			case 13:
-				TreatmentApliation();
-				break;
-			
-			case 14:
-				DeleteTreatment();
+				do
+				{
+					MenuTratamento();
+					scanf("%d", &cases);	
+					switch(cases)
+					{
+						case 1:
+							TreatmentList();
+							break;
+						case 2:
+							break;
+						case 3:
+							TreatmentRegistration();
+							break;
+						case 4:
+							TreatmentApliation();
+							break;
+						case 5:
+							DeleteTreatment();
+							break;
+					}									
+				}while(cases);
+
+				cases = -1;
 				break;
 		}
 	} while(cases);
 	
 	return 0;
 }
+
