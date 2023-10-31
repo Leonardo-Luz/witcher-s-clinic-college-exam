@@ -24,7 +24,8 @@ void MenuAvancado()
 	printf("\n1  - Listar");
 	printf("\n2  - Cadastrar");
 	printf("\n3  - Alterar");
-	printf("\n4  - Excluir");
+	printf("\n4  - Excluir por Codigo");
+	printf("\n5  - Excluir por Nome");
 	
 	printf("\n-> ");
 }
@@ -42,6 +43,19 @@ void MenuTratamento()
 	printf("\n-> ");
 }
 
+void Start()
+{
+	
+	if(StartWitchers() == 1)
+	{
+		printf("\nBruxos Inicializados!");
+	}
+	else
+	{
+		printf("\nErro ao inicializar bruxos!");
+	}
+}
+
 void WitchersList()
 {
 	int i;
@@ -55,7 +69,7 @@ void WitchersList()
 	printf("\n\nCode - Nome - Especialidade");
 	for (i = 0; i < GetQtyWitcher(); i++)
 	{
-		Witcher witcher = GetWitcher(i);
+		Witcher witcher = GetWitcherByIndice(i);
 
 		printf("\n %d - %s - %s", 
 			witcher.code,
@@ -76,7 +90,7 @@ void WitcherRegistration()
 	printf("\nDigite o nome do bruxo: ");
 	printf("-> ");
 	scanf(" %s", &witcher.name);
-
+	
 	printf("\nDigite a especialidade do bruxo: ");
 	printf("-> ");
 	scanf(" %s", &witcher.especiality);
@@ -87,7 +101,7 @@ void WitcherRegistration()
 	else printf("\nErro no cadastro. \nTente novamente!");
 }
 
-void DeleteWitcher()
+void DeleteWitcherCode()
 {	
 	if(GetQtyWitcher() == 0)
 	{
@@ -100,7 +114,26 @@ void DeleteWitcher()
 	printf("-> ");
 	scanf("%d", &code);
 
-	int successful = WitcherRemove(code);
+	int successful = WitcherRemoveByCode(code);
+
+	if(successful) printf("\nBruxo Removido com sucesso!");
+	else printf("\nErro na remocao. \nTente novamente!");
+}
+
+void DeleteWitcherName()
+{	
+	if(GetQtyWitcher() == 0)
+	{
+		printf("\nSem Bruxo!");
+		return;
+	}	
+	
+	char name[100];
+	printf("\nDigite o nome do bruxo que voce deseja deletar: ");
+	printf("-> ");
+	scanf(" %s", &name);
+
+	int successful = WitcherRemoveByName(name);
 
 	if(successful) printf("\nBruxo Removido com sucesso!");
 	else printf("\nErro na remocao. \nTente novamente!");
@@ -151,14 +184,27 @@ void PotionRegistration()
 	else printf("\nErro no cadastro. \nTente novamente!");
 }
 
-void DeletePotion()
+void DeletePotionCode()
 {
 	int code;
 	printf("\nDigite o codigo da pocao que voce deseja deletar: ");
 	printf("-> ");
 	scanf("%d", &code);
 
-	int successful = PotionRemove(code);
+	int successful = PotionRemoveByCode(code);
+
+	if(successful) printf("\nPocao Removida com sucesso!");
+	else printf("\nErro na remocao. \nTente novamente!");
+}
+
+void DeletePotionName()
+{
+	char name[100];
+	printf("\nDigite o nome da pocao que voce deseja deletar: ");
+	printf("-> ");
+	scanf(" %[^\n]s", &name);
+
+	int successful = PotionRemoveByName(name);
 
 	if(successful) printf("\nPocao Removida com sucesso!");
 	else printf("\nErro na remocao. \nTente novamente!");
@@ -215,14 +261,27 @@ void PatiantRegistration()
 	else printf("\nErro no cadastro. \nTente novamente!");
 }
 
-void DeletePatiant()
+void DeletePatiantCode()
 {
 	int code;
 	printf("\nDigite o codigo do paciente que voce deseja deletar: ");
 	printf("-> ");
 	scanf("%d", &code);
 
-	int successful = PatiantRemove(code);
+	int successful = PatiantRemoveByCode(code);
+
+	if(successful) printf("\nPaciente Removido com sucesso!");
+	else printf("\nErro na remocao. \nTente novamente!");
+}
+
+void DeletePatiantName()
+{
+	char name[100];
+	printf("\nDigite o nome do paciente que voce deseja deletar: ");
+	printf("-> ");
+	scanf(" %[%\n]s", &name);
+
+	int successful = PatiantRemoveByName(name);
 
 	if(successful) printf("\nPaciente Removido com sucesso!");
 	else printf("\nErro na remocao. \nTente novamente!");
@@ -313,7 +372,7 @@ void TreatmentRegistration()
 	scanf("%d", &treatment.witcherCode);
 
 	for(i = 0; i < GetQtyWitcher(); i++)	
-	if(GetWitcher(i).code == treatment.witcherCode)
+	if(GetWitcherByIndice(i).code == treatment.witcherCode)
 	{
 		break;
 	}
@@ -422,6 +481,8 @@ int main(int argc, char *argv[])
 {
 	setlocale(LC_ALL, "Portuguese");
 	
+	Start();
+	
 	int cases;
 	
 	do
@@ -448,7 +509,10 @@ int main(int argc, char *argv[])
 						case 3:
 							break;
 						case 4:
-							DeleteWitcher();
+							DeleteWitcherCode();
+							break;
+						case 5:
+							DeleteWitcherName();
 							break;
 					}
 				}while(cases);	
@@ -472,7 +536,10 @@ int main(int argc, char *argv[])
 						case 3:
 							break;
 						case 4:
-							DeletePotion();
+							DeletePotionCode();
+							break;
+						case 5:
+							DeletePotionName();
 							break;
 					}			
 				}while(cases);	
@@ -495,7 +562,10 @@ int main(int argc, char *argv[])
 						case 3:
 							break;
 						case 4:
-							DeleteTreatment();
+							DeletePatiantCode();
+							break;
+						case 5:
+							DeletePatiantName();
 							break;
 					}									
 				}while(cases);

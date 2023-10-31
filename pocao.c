@@ -1,69 +1,139 @@
-#include "pocao.h"
+#include "bruxo.h"
+#include <stdlib.h>
+#include <string.h> //debug
 
-#define NULL ((void *)0)
-#define START 1
-
+int TAM = 5;
 int qtyPotions = 0;
 
-Potion* potions = NULL;
+Potion* Potions = NULL;
 
-int PotionRegister(Potion potion)
+int StartPotions()
 {
-    Potion* potionAllocTemp = NULL;
+    Potions = (Potion*) malloc(TAM * sizeof(Potion));
 
-    if(potions == NULL)
-        potionAllocTemp = (Potion*) malloc(START * sizeof(Potion));
-    else
-        potionAllocTemp = (Potion*) realloc( potions , (START + qtyPotions) * sizeof(Potion));
+	qtyPotions = 3;
 
-    if(potionAllocTemp == NULL)
-        return 0;
+	Potions[0].code = 1;
+	strcpy(Potions[0].especiality, "Roberto") ;
+	strcpy(Potions[0].name, "Carlos");
+	
+	Potions[1].code = 2;
+	strcpy(Potions[1].especiality, "Leonardo") ;
+	strcpy(Potions[1].name, "Carlos");
 
-    potions = potionAllocTemp;
+	Potions[2].code = 3;
+	strcpy(Potions[2].especiality, "Diego") ;
+	strcpy(Potions[2].name, "Carlos");
 
-    potions[qtyPotions] = potion;
-    qtyPotions++;
-    free(potionAllocTemp);
+    return 1;		
+}
+
+int ShutdownPotions()
+{
+	free(Potions);
+	return 1;
+}
+
+//register
+int PotionRegister(Potion Potion)
+{
+    Potion* PotionAllocTemp = NULL;
+
+    Potions[qtyPotions] = Potion;
+ 
+     qtyPotions++;
+    
+	if(qtyPotions == TAM)
+	{
+		TAM += 5;
+    	PotionAllocTemp = (Potion*) realloc(Potions , TAM * sizeof(Potion));
+
+	    if(PotionAllocTemp == NULL)
+	    {
+	    	qtyPotions--;
+	    	TAM -= 5;
+	        return 0;
+		}
+
+	    Potions = PotionAllocTemp;
+	}
+    
     return 1;
 }
 
-int PotionRemove(int code)
+int PotionRemove(int indice)
 {
-    Potion* potionAllocTemp = NULL;
+    Potion* PotionAllocTemp = NULL;	
+	
+    qtyPotions--;
 
+    Potions[indice] = Potions[qtyPotions];
+
+	if(TAM != 5 && qtyPotions < TAM -5 )
+	{
+		TAM -= 5;
+        PotionAllocTemp = (Potion*) realloc(Potions , TAM * sizeof(Potion));	            
+
+        if(PotionAllocTemp == NULL)
+        {
+            qtyPotions++;
+            TAM += 5;
+            return 0;
+        }
+
+        Potions = PotionAllocTemp;
+	}		
+}
+
+//remove
+int PotionRemoveByCode(int code)
+{
     int i;
+
     for (i = 0; i < qtyPotions; i++)
     {
-        if(potions[i].code == code)
+        if(Potions[i].code == code)
         {
-            qtyPotions--;
+			PotionRemove(i);
 
-            potionAllocTemp = (Potion*) realloc( potions , (START + qtyPotions) * sizeof(Potion));
+            return 1;
+        }
+    }    
+    
+    return 0;
+}
 
-            if(potionAllocTemp == NULL)
-            {
-                qtyPotions++;
-                return 0;
-            }
+int PotionRemoveByName(char* name)
+{
+    int i;
 
-            potions[i] = potions[qtyPotions];
-            potions = potionAllocTemp;
-            free(potionAllocTemp);
-            return 1;            
+    for (i = 0; i < qtyPotions; i++)
+    {
+        if(strcmp(Potions[i].name, name)== 0)
+        {
+        	PotionRemove(i);
+            return 1;
         }
     }    
     return 0;
 }
 
-Potion GetPotion(int indice)
+//receive
+Potion GetPotionByIndice(int indice)
 {
     if(indice > qtyPotions) return;
-
-    return potions[indice];
+    
+    return Potions[indice];
 }
 
+//qty receive
 int GetQtyPotion()
 {
     return qtyPotions;
+}
+
+int PotionUpdate()
+{
+	
 }
 

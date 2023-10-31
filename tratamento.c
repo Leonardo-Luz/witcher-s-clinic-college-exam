@@ -1,6 +1,6 @@
 #include "tratamento.h"
+#include <stdlib.h>
 
-#define NULL ((void *)0)
 #define START 1
 
 int qtyTreatments = 0;

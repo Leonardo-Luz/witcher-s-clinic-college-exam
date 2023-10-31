@@ -6,7 +6,13 @@ typedef struct
     float height;
 }Patiant;
 
+int StartPatiant();
+int ShutdownPatiants();
 int PatiantRegister(Patiant patiant);
-int PatiantRemove(int code);
-Patiant GetPatiant(int indice);
+int PatiantRemoveByCode(int code);
+int PatiantRemoveByName(char* name);
+Patiant GetPatiantByIndice(int indice);
+
+
 int GetQtyPatiant();
+int UpdatePatiant();

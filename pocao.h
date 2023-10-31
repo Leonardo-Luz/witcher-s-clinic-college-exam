@@ -5,9 +5,12 @@ typedef struct
     char type[20];
 }Potion;
 
-int PotionRegister(Potion potion);
-int PotionRemove(int code);
-Potion GetPotion(int indice); 
+int StartPotions();
+int ShutdownPotions();
+int PotionsRegister(Witcher witcher);
+int PotionRemoveByCode(int code);
+int PotionRemoveByName(char* name);
+Potion GetPotionByIndice(int indice);
+
 int GetQtyPotion();
-
-
+int UpdatePotion();
