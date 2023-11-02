@@ -7,10 +7,11 @@ typedef struct
 
 int StartPotions();
 int ShutdownPotions();
-int PotionsRegister(Witcher witcher);
+int PotionRegister(Potion witcher);
 int PotionRemoveByCode(int code);
 int PotionRemoveByName(char* name);
 Potion GetPotionByIndice(int indice);
+Potion GetPotionByCode(int code);
 
 int GetQtyPotion();
-int UpdatePotion();
+int PotionUpdate(Potion potion);

@@ -1,29 +1,31 @@
-#include "bruxo.h"
+#include "pocao.h"
 #include <stdlib.h>
 #include <string.h> //debug
 
-int TAM = 5;
+int TAM_POTION = 5;
 int qtyPotions = 0;
 
 Potion* Potions = NULL;
 
 int StartPotions()
 {
-    Potions = (Potion*) malloc(TAM * sizeof(Potion));
+    Potions = (Potion*) malloc(TAM_POTION * sizeof(Potion));
 
-	qtyPotions = 3;
 
-	Potions[0].code = 1;
-	strcpy(Potions[0].especiality, "Roberto") ;
-	strcpy(Potions[0].name, "Carlos");
-	
-	Potions[1].code = 2;
-	strcpy(Potions[1].especiality, "Leonardo") ;
-	strcpy(Potions[1].name, "Carlos");
-
-	Potions[2].code = 3;
-	strcpy(Potions[2].especiality, "Diego") ;
-	strcpy(Potions[2].name, "Carlos");
+//  debug
+//	qtyPotions = 3;
+//
+//	Potions[0].code = 1;
+//	strcpy(Potions[0].type, "Liquido");
+//	strcpy(Potions[0].name, "Red bull");
+//	
+//	Potions[1].code = 2;
+//	strcpy(Potions[1].type, "Pilula") ;
+//	strcpy(Potions[1].name, "Fanta Uva");
+//
+//	Potions[2].code = 3;
+//	strcpy(Potions[2].type, "Erva") ;
+//	strcpy(Potions[2].name, "Astralopitecos Australiano");
 
     return 1;		
 }
@@ -35,23 +37,23 @@ int ShutdownPotions()
 }
 
 //register
-int PotionRegister(Potion Potion)
+int PotionRegister(Potion potion)
 {
     Potion* PotionAllocTemp = NULL;
 
-    Potions[qtyPotions] = Potion;
+    Potions[qtyPotions] = potion;
  
      qtyPotions++;
     
-	if(qtyPotions == TAM)
+	if(qtyPotions == TAM_POTION)
 	{
-		TAM += 5;
-    	PotionAllocTemp = (Potion*) realloc(Potions , TAM * sizeof(Potion));
+		TAM_POTION += 5;
+    	PotionAllocTemp = (Potion*) realloc(Potions , TAM_POTION * sizeof(Potion));
 
 	    if(PotionAllocTemp == NULL)
 	    {
 	    	qtyPotions--;
-	    	TAM -= 5;
+	    	TAM_POTION -= 5;
 	        return 0;
 		}
 
@@ -69,15 +71,15 @@ int PotionRemove(int indice)
 
     Potions[indice] = Potions[qtyPotions];
 
-	if(TAM != 5 && qtyPotions < TAM -5 )
+	if(TAM_POTION != 5 && qtyPotions < TAM_POTION -5 )
 	{
-		TAM -= 5;
-        PotionAllocTemp = (Potion*) realloc(Potions , TAM * sizeof(Potion));	            
+		TAM_POTION -= 5;
+        PotionAllocTemp = (Potion*) realloc(Potions , TAM_POTION * sizeof(Potion));	            
 
         if(PotionAllocTemp == NULL)
         {
             qtyPotions++;
-            TAM += 5;
+            TAM_POTION += 5;
             return 0;
         }
 
@@ -126,14 +128,43 @@ Potion GetPotionByIndice(int indice)
     return Potions[indice];
 }
 
+Potion GetPotionByCode(int code)
+{    
+	Potion potion;
+	potion.code = -1;
+
+    int i;
+
+    for (i = 0; i < qtyPotions; i++)
+    {
+        if(Potions[i].code == code)
+        {
+            return Potions[i];
+        }
+    }    
+    
+    return potion;
+}
+
 //qty receive
 int GetQtyPotion()
 {
     return qtyPotions;
 }
 
-int PotionUpdate()
+int PotionUpdate(Potion potion)
 {
+	int i;
 	
+	for(i = 0; i < qtyPotions; i++)
+	if(Potions[i].code == potion.code)
+	{
+		strcpy(Potions[i].name, potion.name);
+		strcpy(Potions[i].type, potion.type);
+	
+		return 1;
+	}
+	
+	return 0;	
 }
 

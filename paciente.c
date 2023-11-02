@@ -1,29 +1,33 @@
-#include "bruxo.h"
+#include "paciente.h"
 #include <stdlib.h>
 #include <string.h> //debug
 
-int TAM = 5;
+int TAM_PATIANT = 5;
 int qtyPatiants = 0;
 
 Patiant* Patiants = NULL;
 
 int StartPatiants()
 {
-    Patiants = (Patiant*) malloc(TAM * sizeof(Patiant));
+    Patiants = (Patiant*) malloc(TAM_PATIANT * sizeof(Patiant));
 
-	qtyPatiants = 3;
-
-	Patiants[0].code = 1;
-	strcpy(Patiants[0].especiality, "Roberto") ;
-	strcpy(Patiants[0].name, "Carlos");
-	
-	Patiants[1].code = 2;
-	strcpy(Patiants[1].especiality, "Leonardo") ;
-	strcpy(Patiants[1].name, "Carlos");
-
-	Patiants[2].code = 3;
-	strcpy(Patiants[2].especiality, "Diego") ;
-	strcpy(Patiants[2].name, "Carlos");
+//  debug
+//	qtyPatiants = 3;
+//
+//	Patiants[0].code = 1;
+//    Patiants[0].age = 999;
+//    Patiants[0].height = 111.80;    
+//	strcpy(Patiants[0].name, "Carlos");
+//	
+//	Patiants[1].code = 2;
+//    Patiants[1].age = 23;
+//    Patiants[1].height = 1.20;    
+//	strcpy(Patiants[1].name, "Diego");
+//
+//	Patiants[2].code = 3;
+//    Patiants[2].age = 21;
+//    Patiants[2].height = 1.90;    
+//	strcpy(Patiants[2].name, "Leonardo");
 
     return 1;		
 }
@@ -35,23 +39,23 @@ int ShutdownPatiants()
 }
 
 //register
-int PatiantRegister(Patiant Patiant)
+int PatiantRegister(Patiant patiant)
 {
     Patiant* PatiantAllocTemp = NULL;
 
-    Patiants[qtyPatiants] = Patiant;
+    Patiants[qtyPatiants] = patiant;
  
      qtyPatiants++;
     
-	if(qtyPatiants == TAM)
+	if(qtyPatiants == TAM_PATIANT)
 	{
-		TAM += 5;
-    	PatiantAllocTemp = (Patiant*) realloc(Patiants , TAM * sizeof(Patiant));
+		TAM_PATIANT += 5;
+    	PatiantAllocTemp = (Patiant*) realloc(Patiants , TAM_PATIANT * sizeof(Patiant));
 
 	    if(PatiantAllocTemp == NULL)
 	    {
 	    	qtyPatiants--;
-	    	TAM -= 5;
+	    	TAM_PATIANT -= 5;
 	        return 0;
 		}
 
@@ -69,15 +73,15 @@ int PatiantRemove(int indice)
 
     Patiants[indice] = Patiants[qtyPatiants];
 
-	if(TAM != 5 && qtyPatiants < TAM -5 )
+	if(TAM_PATIANT != 5 && qtyPatiants < TAM_PATIANT -5 )
 	{
-		TAM -= 5;
-        PatiantAllocTemp = (Patiant*) realloc(Patiants , TAM * sizeof(Patiant));	            
+		TAM_PATIANT -= 5;
+        PatiantAllocTemp = (Patiant*) realloc(Patiants , TAM_PATIANT * sizeof(Patiant));	            
 
         if(PatiantAllocTemp == NULL)
         {
             qtyPatiants++;
-            TAM += 5;
+            TAM_PATIANT += 5;
             return 0;
         }
 
@@ -126,14 +130,44 @@ Patiant GetPatiantByIndice(int indice)
     return Patiants[indice];
 }
 
+Patiant GetPatiantByCode(int code)
+{    
+	Patiant patiant;
+	patiant.code = -1;
+
+    int i;
+
+    for (i = 0; i < qtyPatiants; i++)
+    {
+        if(Patiants[i].code == code)
+        {
+            return Patiants[i];
+        }
+    }    
+    
+    return patiant;
+}
+
 //qty receive
 int GetQtyPatiant()
 {
     return qtyPatiants;
 }
 
-int PatiantUpdate()
+int PatiantUpdate(Patiant patiant)
 {
+	int i;
 	
+	for(i = 0; i < qtyPatiants; i++)
+	if(Patiants[i].code == patiant.code)
+	{
+		strcpy(Patiants[i].name, patiant.name);
+		Patiants[i].height = patiant.height;
+		Patiants[i].age = patiant.age;
+	
+		return 1;
+	}
+	
+	return 0;	
 }
 

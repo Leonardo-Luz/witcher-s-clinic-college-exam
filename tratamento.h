@@ -8,8 +8,13 @@ typedef struct
     int dosage;
 }Treatment;
 
-int TreatmentRegister(Treatment treatment);
-int TreatmentRemove(int code);
-Treatment GetTreatment(int indice);
+
+int StartTreatments();
+int ShutdownTreatments();
+int TreatmentRegister(Treatment witcher);
+int TreatmentRemoveByCode(int code);
+Treatment GetTreatmentByIndice(int indice);
+Treatment GetTreatmentByCode(int code);
+
 int GetQtyTreatment();
 int TreatmentModification( Treatment treatment );
