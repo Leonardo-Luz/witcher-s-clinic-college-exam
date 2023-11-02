@@ -11,6 +11,7 @@ int WitcherRegister(Witcher witcher);
 int WitcherRemoveByCode(int code);
 int WitcherRemoveByName(char* name);
 Witcher GetWitcherByIndice(int indice);
+Witcher GetWitcherByCode(int code);
 
 int GetQtyWitcher();
-int UpdateWitcher();
+int WitcherUpdate(Witcher witcher);

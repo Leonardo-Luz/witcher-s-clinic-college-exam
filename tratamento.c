@@ -1,67 +1,120 @@
 #include "tratamento.h"
 #include <stdlib.h>
+#include <string.h>
 
-#define START 1
-
+int TAM_Treatment = 5;
 int qtyTreatments = 0;
 
-Treatment* treatments   = NULL;
+Treatment* Treatments = NULL;
 
+int StartTreatments()
+{
+    Treatments = (Treatment*) malloc(TAM_Treatment * sizeof(Treatment));
+
+    return 1;		
+}
+
+int ShutdownTreatments()
+{
+	free(Treatments);
+	return 1;
+}
+
+//register
 int TreatmentRegister(Treatment treatment)
 {
-    Treatment* treatmentAllocTemp = NULL;
+    Treatments[qtyTreatments] = treatment;
+ 
+     qtyTreatments++;
+    
+	if(qtyTreatments == TAM_Treatment)
+	{
+	    Treatment* TreatmentAllocTemp = NULL;
 
-    if(qtyTreatments < START)
-        treatmentAllocTemp = (Treatment*) malloc(START * sizeof(Treatment));
-    else
-        treatmentAllocTemp = (Treatment*) realloc( treatments , (START + qtyTreatments) * sizeof(Treatment));
+		TAM_Treatment += 5;
+    	TreatmentAllocTemp = (Treatment*) realloc(Treatments , TAM_Treatment * sizeof(Treatment));
 
-    if(treatmentAllocTemp == NULL)
-        return 0;
+	    if(TreatmentAllocTemp == NULL)
+	    {
+	    	qtyTreatments--;
+	    	TAM_Treatment -= 5;
+	        return 0;
+		}
 
-    treatments = treatmentAllocTemp;
-
-    treatments[qtyTreatments] = treatment;
-    qtyTreatments++;
+	    Treatments = TreatmentAllocTemp;
+	}
+    
     return 1;
 }
 
-int TreatmentRemove(int code)
+int TreatmentRemove(int indice)
 {
-    Treatment* treatmentAllocTemp = NULL;
+    Treatment* TreatmentAllocTemp = NULL;	
+	
+    qtyTreatments--;
 
+    Treatments[indice] = Treatments[qtyTreatments];
+
+	if(TAM_Treatment != 5 && qtyTreatments < TAM_Treatment -5 )
+	{
+		TAM_Treatment -= 5;
+        TreatmentAllocTemp = (Treatment*) realloc(Treatments , TAM_Treatment * sizeof(Treatment));	            
+
+        if(TreatmentAllocTemp == NULL)
+        {
+            qtyTreatments++;
+            TAM_Treatment += 5;
+            return 0;
+        }
+
+        Treatments = TreatmentAllocTemp;
+	}		
+}
+
+//remove
+int TreatmentRemoveByCode(int code)
+{
     int i;
+
     for (i = 0; i < qtyTreatments; i++)
     {
-        if(treatments[i].code == code)
+        if(Treatments[i].code == code)
         {
-            qtyTreatments--;
+			TreatmentRemove(i);
 
-            treatmentAllocTemp = (Treatment*) realloc( treatments , (START + qtyTreatments) * sizeof(Treatment));
-
-            if(treatmentAllocTemp == NULL)
-            {
-                qtyTreatments++;
-                return 0;
-            }
-
-            treatments[i] = treatments[qtyTreatments];
-            treatments = treatmentAllocTemp;             
             return 1;
         }
     }    
+    
     return 0;
 }
 
-
-Treatment GetTreatment(int indice)
+//receive
+Treatment GetTreatmentByIndice(int indice)
 {
     if(indice > qtyTreatments) return;
-
-    return treatments[indice];
+    
+    return Treatments[indice];
 }
 
+Treatment GetTreatmentByCode(int code)
+{
+	Treatment treatment;
+	treatment.code = -1;
+    int i;
 
+    for (i = 0; i < qtyTreatments; i++)
+    {
+        if(Treatments[i].code == code)
+        {
+            return Treatments[i];
+        }
+    }    
+    
+    return treatment;
+}
+
+//qty receive
 int GetQtyTreatment()
 {
     return qtyTreatments;
@@ -71,10 +124,10 @@ int TreatmentModification( Treatment treatment )
 {
     int i;
     for (i = 0; i < qtyTreatments; i++)
-    if(treatments[i].code == treatment.code)
+    if(Treatments[i].code == treatment.code)
     {
-        treatments[i].duration = treatment.duration;
-        treatments[i].dosage = treatment.dosage;
+        Treatments[i].duration = treatment.duration;
+        Treatments[i].dosage = treatment.dosage;
 
         return 1;
     }
