@@ -11,23 +11,29 @@ int StartPatiants()
 {
     Patiants = (Patiant*) malloc(TAM_PATIANT * sizeof(Patiant));
 
+	if(Patiants == NULL)
+	{
+		return 0;
+	}
+
+
 //  debug
-//	qtyPatiants = 3;
-//
-//	Patiants[0].code = 1;
-//    Patiants[0].age = 999;
-//    Patiants[0].height = 111.80;    
-//	strcpy(Patiants[0].name, "Carlos");
-//	
-//	Patiants[1].code = 2;
-//    Patiants[1].age = 23;
-//    Patiants[1].height = 1.20;    
-//	strcpy(Patiants[1].name, "Diego");
-//
-//	Patiants[2].code = 3;
-//    Patiants[2].age = 21;
-//    Patiants[2].height = 1.90;    
-//	strcpy(Patiants[2].name, "Leonardo");
+	qtyPatiants = 3;
+
+	Patiants[0].code = 1;
+    Patiants[0].age = 999;
+    Patiants[0].height = 111.80;    
+	strcpy(Patiants[0].name, "Carlos");
+	
+	Patiants[1].code = 2;
+    Patiants[1].age = 23;
+    Patiants[1].height = 1.20;    
+	strcpy(Patiants[1].name, "Diego");
+
+	Patiants[2].code = 3;
+    Patiants[2].age = 21;
+    Patiants[2].height = 1.90;    
+	strcpy(Patiants[2].name, "Leonardo");
 
     return 1;		
 }
@@ -123,29 +129,29 @@ int PatiantRemoveByName(char* name)
 }
 
 //receive
-Patiant GetPatiantByIndice(int indice)
+int GetPatiantByIndice(int indice , Patiant* patiant)
 {
-    if(indice > qtyPatiants) return;
+    if(indice > qtyPatiants) return 0;
     
-    return Patiants[indice];
+    *patiant = Patiants[indice];
+    
+    return 1;
 }
 
-Patiant GetPatiantByCode(int code)
+int GetPatiantByCode(int code , Patiant* patiant)
 {    
-	Patiant patiant;
-	patiant.code = -1;
-
     int i;
 
     for (i = 0; i < qtyPatiants; i++)
     {
         if(Patiants[i].code == code)
         {
-            return Patiants[i];
+            *patiant = Patiants[i];
+			return 1;
         }
     }    
     
-    return patiant;
+    return 0;
 }
 
 //qty receive

@@ -10,8 +10,8 @@ int ShutdownPotions();
 int PotionRegister(Potion witcher);
 int PotionRemoveByCode(int code);
 int PotionRemoveByName(char* name);
-Potion GetPotionByIndice(int indice);
-Potion GetPotionByCode(int code);
+int GetPotionByIndice(int indice , Potion* potion);
+int GetPotionByCode(int code , Potion* potion);
 
 int GetQtyPotion();
 int PotionUpdate(Potion potion);

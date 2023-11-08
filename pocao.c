@@ -11,21 +11,25 @@ int StartPotions()
 {
     Potions = (Potion*) malloc(TAM_POTION * sizeof(Potion));
 
+	if(Potions == NULL)
+	{
+		return 0;
+	}
 
 //  debug
-//	qtyPotions = 3;
-//
-//	Potions[0].code = 1;
-//	strcpy(Potions[0].type, "Liquido");
-//	strcpy(Potions[0].name, "Red bull");
-//	
-//	Potions[1].code = 2;
-//	strcpy(Potions[1].type, "Pilula") ;
-//	strcpy(Potions[1].name, "Fanta Uva");
-//
-//	Potions[2].code = 3;
-//	strcpy(Potions[2].type, "Erva") ;
-//	strcpy(Potions[2].name, "Astralopitecos Australiano");
+	qtyPotions = 3;
+
+	Potions[0].code = 1;
+	strcpy(Potions[0].type, "Liquido");
+	strcpy(Potions[0].name, "Red bull");
+	
+	Potions[1].code = 2;
+	strcpy(Potions[1].type, "Pilula") ;
+	strcpy(Potions[1].name, "Fanta Uva");
+
+	Potions[2].code = 3;
+	strcpy(Potions[2].type, "Erva") ;
+	strcpy(Potions[2].name, "Astralopitecos Australiano");
 
     return 1;		
 }
@@ -121,29 +125,29 @@ int PotionRemoveByName(char* name)
 }
 
 //receive
-Potion GetPotionByIndice(int indice)
+int GetPotionByIndice(int indice , Potion* potion)
 {
-    if(indice > qtyPotions) return;
+    if(indice > qtyPotions) return 0;
     
-    return Potions[indice];
+    *potion = Potions[indice];
+
+	return 1;
 }
 
-Potion GetPotionByCode(int code)
+int GetPotionByCode(int code , Potion* potion)
 {    
-	Potion potion;
-	potion.code = -1;
-
     int i;
 
     for (i = 0; i < qtyPotions; i++)
     {
         if(Potions[i].code == code)
         {
-            return Potions[i];
+            *potion = Potions[i];
+            return 1;
         }
     }    
     
-    return potion;
+    return 0;
 }
 
 //qty receive

@@ -11,6 +11,11 @@ int StartTreatments()
 {
     Treatments = (Treatment*) malloc(TAM_Treatment * sizeof(Treatment));
 
+	if(Treatments == NULL)
+	{
+		return 0;
+	}
+
     return 1;		
 }
 
@@ -90,28 +95,28 @@ int TreatmentRemoveByCode(int code)
 }
 
 //receive
-Treatment GetTreatmentByIndice(int indice)
+int GetTreatmentByIndice(int indice , Treatment* treatment)
 {
-    if(indice > qtyTreatments) return;
+    if(indice > qtyTreatments) return 0;
     
-    return Treatments[indice];
+    *treatment = Treatments[indice];
+	return 1;
 }
 
-Treatment GetTreatmentByCode(int code)
+int GetTreatmentByCode(int code , Treatment* treatment)
 {
-	Treatment treatment;
-	treatment.code = -1;
     int i;
 
     for (i = 0; i < qtyTreatments; i++)
     {
         if(Treatments[i].code == code)
         {
-            return Treatments[i];
+            *treatment = Treatments[i];
+            return 1;
         }
     }    
     
-    return treatment;
+    return 0;
 }
 
 //qty receive

@@ -9,22 +9,28 @@ Witcher* witchers = NULL;
 
 int StartWitchers()
 {
+	
     witchers = (Witcher*) malloc(TAM_WITCHER * sizeof(Witcher));
 
+	if(witchers == NULL)
+	{
+		return 0;
+	}
+
 //  debug
-//	qtyWitchers = 3;
-//
-//	witchers[0].code = 1;
-//	strcpy(witchers[0].especiality, "Roberto") ;
-//	strcpy(witchers[0].name, "Carlos");
-//	
-//	witchers[1].code = 2;
-//	strcpy(witchers[1].especiality, "Leonardo") ;
-//	strcpy(witchers[1].name, "Carlos");
-//
-//	witchers[2].code = 3;
-//	strcpy(witchers[2].especiality, "Diego") ;
-//	strcpy(witchers[2].name, "Carlos");
+	qtyWitchers = 3;
+
+	witchers[0].code = 1;
+	strcpy(witchers[0].especiality, "Roberto") ;
+	strcpy(witchers[0].name, "a");
+	
+	witchers[1].code = 2;
+	strcpy(witchers[1].especiality, "Leonardo") ;
+	strcpy(witchers[1].name, "b");
+
+	witchers[2].code = 3;
+	strcpy(witchers[2].especiality, "Diego") ;
+	strcpy(witchers[2].name, "c");
 
     return 1;		
 }
@@ -120,29 +126,28 @@ int WitcherRemoveByName(char* name)
 }
 
 //receive
-Witcher GetWitcherByIndice(int indice)
+int GetWitcherByIndice(int indice , Witcher* witcher)
 {
-    if(indice > qtyWitchers) return;
+    if(indice > qtyWitchers) return 0;
     
-    return witchers[indice];
+	*witcher = witchers[indice];
+	
+	return 1;
 }
 
-Witcher GetWitcherByCode(int code)
+int GetWitcherByCode(int code , Witcher* witcher)
 {    
-	Witcher witcher;
-	witcher.code = -1;
-
     int i;
-
     for (i = 0; i < qtyWitchers; i++)
     {
         if(witchers[i].code == code)
         {
-            return witchers[i];
+            *witcher = witchers[i];
+            return 1;
         }
     }    
     
-    return witcher;
+    return 0;
 }
 
 
