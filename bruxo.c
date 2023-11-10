@@ -74,8 +74,6 @@ int WitcherRemove(int indice)
 	
     qtyWitchers--;
 
-    witchers[indice] = witchers[qtyWitchers];
-
 	if(TAM_WITCHER != 5 && qtyWitchers < TAM_WITCHER -5 )
 	{
 		TAM_WITCHER -= 5;
@@ -90,6 +88,9 @@ int WitcherRemove(int indice)
 
         witchers = witcherAllocTemp;
 	}		
+
+    witchers[indice] = witchers[qtyWitchers];
+    return 1;
 }
 
 //remove

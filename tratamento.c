@@ -58,7 +58,6 @@ int TreatmentRemove(int indice)
 	
     qtyTreatments--;
 
-    Treatments[indice] = Treatments[qtyTreatments];
 
 	if(TAM_Treatment != 5 && qtyTreatments < TAM_Treatment -5 )
 	{
@@ -74,6 +73,9 @@ int TreatmentRemove(int indice)
 
         Treatments = TreatmentAllocTemp;
 	}		
+
+    Treatments[indice] = Treatments[qtyTreatments];
+    return 1;
 }
 
 //remove

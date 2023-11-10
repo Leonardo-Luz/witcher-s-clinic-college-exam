@@ -77,7 +77,6 @@ int PatiantRemove(int indice)
 	
     qtyPatiants--;
 
-    Patiants[indice] = Patiants[qtyPatiants];
 
 	if(TAM_PATIANT != 5 && qtyPatiants < TAM_PATIANT -5 )
 	{
@@ -93,6 +92,8 @@ int PatiantRemove(int indice)
 
         Patiants = PatiantAllocTemp;
 	}		
+    Patiants[indice] = Patiants[qtyPatiants];
+    return 1;
 }
 
 //remove

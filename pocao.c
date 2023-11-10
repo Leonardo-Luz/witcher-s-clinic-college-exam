@@ -73,7 +73,6 @@ int PotionRemove(int indice)
 	
     qtyPotions--;
 
-    Potions[indice] = Potions[qtyPotions];
 
 	if(TAM_POTION != 5 && qtyPotions < TAM_POTION -5 )
 	{
@@ -89,6 +88,8 @@ int PotionRemove(int indice)
 
         Potions = PotionAllocTemp;
 	}		
+    Potions[indice] = Potions[qtyPotions];
+    return 1;
 }
 
 //remove
