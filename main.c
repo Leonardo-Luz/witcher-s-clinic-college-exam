@@ -95,7 +95,7 @@ void WitcherRegistration()
 	printf("-> ");
 	scanf("%d", &witcher.code);
 	
-	if(witcher.code < 0)
+	if(witcher.code < 0 || GetWitcherByCode(witcher.code , &witcher) == 1)
 	{
 		printf("\nCodigo invalido!");
 		return;
@@ -286,7 +286,7 @@ void PotionRegistration()
 	printf("-> ");
 	scanf("%d", &potion.code);
 	
-	if(potion.code < 0)
+	if(potion.code < 0 || GetPotionByCode(potion.code, &potion) == 1)
 	{
 		printf("\nCodigo invalido!");
 		return;
@@ -467,7 +467,7 @@ void PatiantRegistration()
 	printf("-> ");
 	scanf("%d", &patiant.code);
 
-	if(patiant.code < 0)
+	if(patiant.code < 0 || GetPatiantByCode(patiant.code , &patiant) == 1)
 	{
 		printf("\nCodigo invalido!");
 		return;
@@ -815,7 +815,7 @@ void TreatmentRegistration()
 	printf("-> ");
 	scanf("%d", &treatment.code);
 
-	if(treatment.code < 0)
+	if(treatment.code < 0 || GetTreatmentByCode(treatment.code, &treatment) == 1)
 	{
 		printf("\nCodigo invalido!");
 		return;
@@ -928,13 +928,12 @@ void DeleteTreatment()
 		return;
 	}
 	
-	
 	int code;
 	printf("\nDigite o codigo do Tratamento que voce deseja deletar: ");
 	printf("\n-> ");
-	scanf("%d", &code);
+	scanf(" %d", &code);
 
-	int successful = TreatmentRemove(code);
+	int successful = TreatmentRemoveByCode(code);
 
 	if(successful) printf("\nTratamento Removido com sucesso!");
 	else printf("\nErro na remocao. \nTente novamente!");
