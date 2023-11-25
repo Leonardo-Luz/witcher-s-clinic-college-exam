@@ -75,7 +75,7 @@ void WitchersList()
 		Witcher witcher;
 		if(GetWitcherByIndice(i, &witcher) == 0)
 		{
-			printf("Indice Invalido");
+			printf("\nIndice Invalido\n");
 			return;
 		}
 
@@ -125,7 +125,7 @@ int witcherIsTreating( int code )
 	{
 		if(GetTreatmentByIndice(i , &treatment) == 0)
 		{
-			printf("\nIndice invalido");
+			printf("\nIndice invalido\n");
 			return 0;
 		}
 		
@@ -172,7 +172,7 @@ int witcherNameIsTreating( char* name )
 	{
 		if(GetTreatmentByIndice(i , &treatment) == 0)
 		{
-			printf("\nIndice invalido");
+			printf("\nIndice invalido\n");
 			return 0;
 		}
 	
@@ -266,7 +266,7 @@ void PotionsList()
 		
 		if(GetPotionByIndice(i , &potion) == 0)
 		{
-			printf("\nIndice invalido!");
+			printf("\nIndice invalido!\n");
 			return;
 		}
 
@@ -316,7 +316,7 @@ int potionIsTreating( int code )
 	{
 		if(GetTreatmentByIndice(i , &treatment) == 0)
 		{
-			printf("\nIndice invalido");
+			printf("\nIndice invalido\n");
 			return 0;
 		}
 		
@@ -357,7 +357,7 @@ int potionNameIsTreating( char* name )
 	{
 		if(GetTreatmentByIndice(i , &treatment) == 0)
 		{
-			printf("\nIndice invalido");
+			printf("\nIndice invalido\n");
 			return 0;
 		}
 	
@@ -445,7 +445,7 @@ void PatiantsList()
 		
 		if(GetPatiantByIndice(i , &patiant) == 0)
 		{
-			printf("\nIndice invalido");
+			printf("\nIndice invalido\n");
 			return;
 		}
 
@@ -501,7 +501,7 @@ int PatiantIsTreating( int code )
 	{
 		if(GetTreatmentByIndice(i , &treatment) == 0)
 		{
-			printf("\nIndice invalido");
+			printf("\nIndice invalido\n");
 			return 0;
 		}
 
@@ -543,7 +543,7 @@ int patiantNameIsTreating( char* name )
 	{
 		if(GetTreatmentByIndice(i , &treatment) == 0)
 		{
-			printf("\nIndice invalido");
+			printf("\nIndice invalido\n");
 			return 0;
 		}
 	
@@ -637,7 +637,8 @@ void TreatmentListPacient()
 	
 	if(GetPatiantByCode(code , &patiant) == 0)
 	{
-		printf("Indice invalido");
+		printf("\nCodigo invalido\n");
+		return;
 	}
 	
 	if(patiant.code != code || code < 0)
@@ -756,7 +757,7 @@ void WitcherPatiantsList()
 		
 		if(i == GetQtyTreatment() - 1)
 		{
-			printf("\nbruxo sem tratamento!");
+			printf("\nbruxo sem tratamento!\n");
 			return;
 		}
 	}
@@ -768,7 +769,7 @@ void WitcherPatiantsList()
 		
 		if(GetTreatmentByIndice(i , &treatment) == 0 )
 		{
-			printf("\nIndice invalido");
+			printf("\nCodigo invalido\n");
 			return;
 		}
 		
@@ -776,7 +777,7 @@ void WitcherPatiantsList()
 		
 		if(GetPotionByCode(treatment.potionCode , &potion) == 0 )
 		{
-			printf("\nCodigo invalido");
+			printf("\nCodigo invalido\n");
 			return;
 		}
 
@@ -784,7 +785,7 @@ void WitcherPatiantsList()
 		
 		if(GetPatiantByCode(treatment.patiantCode , &patiant) == 0 )
 		{
-			printf("\nCodigo invalido");
+			printf("\nCodigo invalido\n");
 			return;
 		}				
 		
@@ -830,7 +831,7 @@ void TreatmentRegistration()
 
 	if(GetWitcherByCode(treatment.witcherCode , &witcher) == 0)
 	{
-		printf("Codigo invalido! \n");
+		printf("\nCodigo invalido! \n");
 		return;	
 	}
 
@@ -843,13 +844,13 @@ void TreatmentRegistration()
 	
 	if(GetPotionByCode(treatment.potionCode , &potion) == 0)
 	{
-		printf("Codigo invalido! \n");
+		printf("\nCodigo invalido! \n");
 		return;	
 	}
 	
 	if(potion.code != treatment.potionCode)
 	{
-		printf("Codigo invalido! \n");
+		printf("\nCodigo invalido! \n");
 		return;	
 	}
 
@@ -862,7 +863,7 @@ void TreatmentRegistration()
 	
 	if(GetPatiantByCode(treatment.patiantCode , &patiant) == 0)
 	{
-		printf("Codigo invalido! \n");
+		printf("\nCodigo invalido! \n");
 		return;	
 	}
 
@@ -898,7 +899,7 @@ void TreatmentApliation()
 	
 	if(GetTreatmentByCode(code , &treatment) == 0)
 	{
-		printf("Codigo invalido! \n");
+		printf("\nCodigo invalido! \n");
 		return;	
 	}
 	
