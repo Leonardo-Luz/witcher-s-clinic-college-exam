@@ -1,172 +1,196 @@
 #include "bruxo.h"
 #include <stdlib.h>
-#include <string.h> //debug
+#include <stdio.h>
+#include <string.h>
 
-int TAM_WITCHER = 5;
 int qtyWitchers = 0;
 
-Witcher* witchers = NULL;
+FILE *witcherFile;
 
 int StartWitchers()
 {
-    witchers = (Witcher*) malloc(TAM_WITCHER * sizeof(Witcher));
+	witcherFile = fopen("BruxoArq.txt", "r+b");
 
-//  debug
-//	qtyWitchers = 3;
-//
-//	witchers[0].code = 1;
-//	strcpy(witchers[0].especiality, "Roberto") ;
-//	strcpy(witchers[0].name, "Carlos");
-//	
-//	witchers[1].code = 2;
-//	strcpy(witchers[1].especiality, "Leonardo") ;
-//	strcpy(witchers[1].name, "Carlos");
-//
-//	witchers[2].code = 3;
-//	strcpy(witchers[2].especiality, "Diego") ;
-//	strcpy(witchers[2].name, "Carlos");
+	if(witcherFile == NULL)
+	{
+		witcherFile = fopen("BruxoArq.txt", "w+b");	
 
-    return 1;		
+		if(witcherFile == NULL)
+			return 0;
+	}
+
+	fseek(witcherFile, 0, SEEK_END);
+	
+	qtyWitchers = ftell(witcherFile) / sizeof(Witcher);
+	
+	rewind(witcherFile);
+
+    return 1;
 }
 
 int ShutdownWitchers()
 {
-	free(witchers);
+	fclose(witcherFile);
+	
 	return 1;
 }
 
-//register
 int WitcherRegister(Witcher witcher)
-{
-    Witcher* witcherAllocTemp = NULL;
+{ 
+    qtyWitchers++;
 
-    witchers[qtyWitchers] = witcher;
- 
-     qtyWitchers++;
+	rewind(witcherFile);
+
+	fseek(witcherFile, 0, SEEK_END);
+	
+	int result;		
+
+	result = fwrite(&witcher, sizeof(Witcher), 1 , witcherFile);
     
-	if(qtyWitchers == TAM_WITCHER)
-	{
-		TAM_WITCHER += 5;
-    	witcherAllocTemp = (Witcher*) realloc(witchers , TAM_WITCHER * sizeof(Witcher));
-
-	    if(witcherAllocTemp == NULL)
-	    {
-	    	qtyWitchers--;
-	    	TAM_WITCHER -= 5;
-	        return 0;
-		}
-
-	    witchers = witcherAllocTemp;
-	}
+    if(!result)
+		return 0;
     
     return 1;
 }
 
-int WitcherRemove(int indice)
+int WitcherRemove(Witcher witcher)
 {
-    Witcher* witcherAllocTemp = NULL;	
-	
-    qtyWitchers--;
+	FILE* temp;
 
-    witchers[indice] = witchers[qtyWitchers];
+	temp = fopen("temp.txt", "w+b");
 
-	if(TAM_WITCHER != 5 && qtyWitchers < TAM_WITCHER -5 )
+	if(temp == NULL)
 	{
-		TAM_WITCHER -= 5;
-        witcherAllocTemp = (Witcher*) realloc(witchers , TAM_WITCHER * sizeof(Witcher));	            
+		return 0;
+	}
 
-        if(witcherAllocTemp == NULL)
-        {
-            qtyWitchers++;
-            TAM_WITCHER += 5;
-            return 0;
-        }
-
-        witchers = witcherAllocTemp;
-	}		
-}
-
-//remove
-int WitcherRemoveByCode(int code)
-{
     int i;
 
-    for (i = 0; i < qtyWitchers; i++)
-    {
-        if(witchers[i].code == code)
-        {
-			WitcherRemove(i);
+    Witcher tempWitcher;
 
-            return 1;
-        }
-    }    
-    
-    return 0;
+	rewind(witcherFile);
+
+    for(i = 0; i < qtyWitchers; i++)
+    {
+    	fread(&tempWitcher , sizeof(Witcher) , 1 , witcherFile );
+
+    	if( tempWitcher.code != witcher.code)
+    		fwrite(&tempWitcher, sizeof(Witcher), 1 , temp );
+	}
+
+	fclose(witcherFile);
+
+	remove("BruxoArq.txt");
+
+	fclose(temp);
+
+	rename("temp.txt", "BruxoArq.txt");
+
+	witcherFile = fopen("BruxoArq.txt", "r+b");
+
+	if(witcherFile == NULL)
+		return 0;
+
+    qtyWitchers--;
+
+    return 1;
+}
+
+int WitcherRemoveByCode(int code)
+{
+	Witcher temp;
+	
+	if(GetWitcherByCode(code, &temp) == 0)
+		return 0;
+
+	WitcherRemove(temp);
+
+    return 1;
 }
 
 int WitcherRemoveByName(char* name)
 {
+	rewind(witcherFile);
+	
+	Witcher temp;
+	
     int i;
-
     for (i = 0; i < qtyWitchers; i++)
-    {
-        if(strcmp(witchers[i].name, name)== 0)
+    {	
+   		fread(&temp, sizeof(Witcher), 1, witcherFile);
+		
+        if(strcmp(temp.name , name) == 0)
         {
-        	WitcherRemove(i);
+			WitcherRemove(temp);
             return 1;
         }
-    }    
+    }
+
     return 0;
 }
 
-//receive
-Witcher GetWitcherByIndice(int indice)
+int GetWitcherByIndice(int indice , Witcher* witcher)
 {
-    if(indice > qtyWitchers) return;
+    if(indice >= qtyWitchers) return 0;
+
+	rewind(witcherFile);
+	
+	if( indice != 0 )
+		fseek(witcherFile, sizeof(Witcher)*(indice), SEEK_SET);
+	
+	Witcher temp;
     
-    return witchers[indice];
+	fread(&temp, sizeof(Witcher), 1, witcherFile);
+
+	*witcher = temp;
+
+	return 1;
 }
 
-Witcher GetWitcherByCode(int code)
+int GetWitcherByCode(int code , Witcher* witcher)
 {    
-	Witcher witcher;
-	witcher.code = -1;
+	rewind(witcherFile);
+
+	Witcher temp;
 
     int i;
-
     for (i = 0; i < qtyWitchers; i++)
-    {
-        if(witchers[i].code == code)
+    {	
+   		fread(&temp, sizeof(Witcher), 1, witcherFile);
+		
+        if(temp.code == code)
         {
-            return witchers[i];
+			*witcher = temp;
+            return 1;
         }
     }    
     
-    return witcher;
+    return 0;
 }
 
-
-//qty receive
 int GetQtyWitcher()
 {
     return qtyWitchers;
 }
 
 int WitcherUpdate(Witcher witcher)
-{
+{	
+	rewind(witcherFile);	
+	Witcher tempWitcher;
+	
 	int i;
-	
 	for(i = 0; i < qtyWitchers; i++)
-	if(witchers[i].code == witcher.code)
 	{
-		strcpy(witchers[i].especiality, witcher.especiality);
-		strcpy(witchers[i].name, witcher.name);
-	
-		return 1;
+		fread(&tempWitcher, sizeof(Witcher), 1 , witcherFile);
+				
+		if(tempWitcher.code == witcher.code)
+		{
+			fseek(witcherFile, sizeof(Witcher)*i, SEEK_SET);
+
+			fwrite(&witcher, sizeof(Witcher), 1, witcherFile);
+
+			return 1;		
+		}
 	}
-	
 	return 0;
 }
-
-
-

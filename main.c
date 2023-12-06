@@ -72,7 +72,12 @@ void WitchersList()
 	printf("\n\nCode - Nome - Especialidade");
 	for (i = 0; i < GetQtyWitcher(); i++)
 	{
-		Witcher witcher = GetWitcherByIndice(i);
+		Witcher witcher;
+		if(!GetWitcherByIndice(i, &witcher))
+		{
+			printf("Indice Invalido");
+			return;
+		}
 
 		printf("\n %d - %s - %s", 
 			witcher.code,
@@ -90,7 +95,7 @@ void WitcherRegistration()
 	printf("-> ");
 	scanf("%d", &witcher.code);
 	
-	if(witcher.code < 0)
+	if(witcher.code < 0 || GetWitcherByCode(witcher.code , &witcher) == 1)
 	{
 		printf("\nCodigo invalido!");
 		return;
@@ -110,6 +115,27 @@ void WitcherRegistration()
 	else printf("\nErro no cadastro. \nTente novamente!");
 }
 
+int witcherIsTreating( int code )
+{
+	int i;
+	
+	Treatment treatment;
+	
+	for(i = 0; i < GetQtyTreatment(); i++)
+	{
+		if(GetTreatmentByIndice(i , &treatment) == 0)
+		{
+			printf("\nIndice invalido");
+			return 0;
+		}
+		
+		if(treatment.witcherCode == code)
+			return 1;
+	}
+	
+	return 0;
+}
+
 void DeleteWitcherCode()
 {	
 	if(GetQtyWitcher() == 0)
@@ -123,10 +149,44 @@ void DeleteWitcherCode()
 	printf("-> ");
 	scanf("%d", &code);
 
+	if(witcherIsTreating( code ) == 1)
+	{
+		printf("\nBruxo esta sendo usada em um tratamento!");
+		return;
+	}
+	
 	int successful = WitcherRemoveByCode(code);
 
 	if(successful) printf("\nBruxo Removido com sucesso!");
 	else printf("\nErro na remocao. \nTente novamente!");
+}
+
+int witcherNameIsTreating( char* name )
+{
+	int i;
+	
+	Treatment treatment;
+	Witcher witcher;
+	
+	for(i = 0; i < GetQtyTreatment(); i++)
+	{
+		if(GetTreatmentByIndice(i , &treatment) == 0)
+		{
+			printf("\nIndice invalido");
+			return 0;
+		}
+	
+		if(GetWitcherByCode(treatment.witcherCode , &witcher) == 0)
+		{
+			printf("\nCodigo invalido");
+			return 0;
+		}
+		
+		if(strcmp(witcher.name, name) == 0)
+			return 1;
+	}
+	
+	return 0;
 }
 
 void DeleteWitcherName()
@@ -135,13 +195,20 @@ void DeleteWitcherName()
 	{
 		printf("\nSem Bruxo!");
 		return;
-	}	
+	}
+	
 	
 	char name[100];
 	printf("\nDigite o nome do bruxo que voce deseja deletar: ");
 	printf("-> ");
 	scanf(" %[^\n]s", &name);
 
+	if(witcherNameIsTreating( name ) == 1)
+	{
+		printf("\nBruxo esta sendo usada em um tratamento!");
+		return;
+	}
+	
 	int successful = WitcherRemoveByName(name);
 
 	if(successful) printf("\nBruxo Removido com sucesso!");
@@ -162,7 +229,7 @@ void WitcherUpd()
 	printf("-> ");
 	scanf("%d", &witcher.code);
 
-	if(GetWitcherByCode(witcher.code).code != witcher.code || witcher.code < 0)
+	if(GetWitcherByCode(witcher.code, &witcher) == 0)
 	{
 		printf("\nCodigo invalido!");
 		return;
@@ -195,7 +262,13 @@ void PotionsList()
 	printf("\n\nCode - Nome - Tipo");
 	for (i = 0; i < GetQtyPotion(); i++)
 	{
-		Potion potion = GetPotionByIndice(i);
+		Potion potion;
+		
+		if(GetPotionByIndice(i , &potion) == 0)
+		{
+			printf("\nIndice invalido!");
+			return;
+		}
 
 		printf("\n %d - %s - %s", 
 			potion.code,
@@ -213,7 +286,7 @@ void PotionRegistration()
 	printf("-> ");
 	scanf("%d", &potion.code);
 	
-	if(potion.code < 0)
+	if(potion.code < 0 || GetPotionByCode(potion.code, &potion) == 1)
 	{
 		printf("\nCodigo invalido!");
 		return;
@@ -233,17 +306,72 @@ void PotionRegistration()
 	else printf("\nErro no cadastro. \nTente novamente!");
 }
 
+int potionIsTreating( int code )
+{
+	int i;
+	
+	Treatment treatment;
+	
+	for(i = 0; i < GetQtyTreatment(); i++)
+	{
+		if(GetTreatmentByIndice(i , &treatment) == 0)
+		{
+			printf("\nIndice invalido");
+			return 0;
+		}
+		
+		if(code == treatment.potionCode)
+			return 1;
+	}
+	
+	return 0;
+}
+
 void DeletePotionCode()
 {
 	int code;
 	printf("\nDigite o codigo da pocao que voce deseja deletar: ");
 	printf("-> ");
 	scanf("%d", &code);
+	
+	if(potionIsTreating(code) == 1)
+	{
+		printf("\nPocao esta sendo usada em um tratamento!");
+		return;
+	}
 
 	int successful = PotionRemoveByCode(code);
 
 	if(successful) printf("\nPocao Removida com sucesso!");
 	else printf("\nErro na remocao. \nTente novamente!");
+}
+
+int potionNameIsTreating( char* name )
+{
+	int i;
+	
+	Treatment treatment;
+	Potion potion;
+	
+	for(i = 0; i < GetQtyTreatment(); i++)
+	{
+		if(GetTreatmentByIndice(i , &treatment) == 0)
+		{
+			printf("\nIndice invalido");
+			return 0;
+		}
+	
+		if(GetPotionByCode(treatment.potionCode , &potion) == 0)
+		{
+			printf("\nCodigo invalido");
+			return 0;
+		}
+		
+		if(strcmp(potion.name, name) == 0)
+			return 1;
+	}
+	
+	return 0;
 }
 
 void DeletePotionName()
@@ -252,6 +380,12 @@ void DeletePotionName()
 	printf("\nDigite o nome da pocao que voce deseja deletar: ");
 	printf("-> ");
 	scanf(" %[^\n]s", &name);
+
+	if(potionNameIsTreating( name ) == 1)
+	{
+		printf("\nPocao esta sendo usada em um tratamento!");
+		return;
+	}
 
 	int successful = PotionRemoveByName(name);
 
@@ -273,7 +407,7 @@ void PotionUpd()
 	printf("-> ");
 	scanf("%d", &potion.code);
 
-	if(GetPotionByCode(potion.code).code != potion.code || potion.code < 0)
+	if(GetPotionByCode(potion.code , &potion) == 0)
 	{
 		printf("\nCodigo invalido!");
 		return;
@@ -289,7 +423,7 @@ void PotionUpd()
 
 	int successful = PotionUpdate(potion);
 
-	if(successful) printf("\Pocao Atualizada com sucesso!");
+	if(successful) printf("\nPocao Atualizada com sucesso!");
 	else printf("\nErro na atualizacao. \nTente novamente!");
 }
 
@@ -307,7 +441,13 @@ void PatiantsList()
 	printf("\n\nCode - Nome - Idade - Altura");
 	for (i = 0; i < GetQtyPatiant(); i++)
 	{
-		Patiant patiant = GetPatiantByIndice(i);
+		Patiant patiant;
+		
+		if(GetPatiantByIndice(i , &patiant) == 0)
+		{
+			printf("\nIndice invalido");
+			return;
+		}
 
 		printf("\n %d - %s - %d - %.2f ", 
 			patiant.code,
@@ -327,7 +467,7 @@ void PatiantRegistration()
 	printf("-> ");
 	scanf("%d", &patiant.code);
 
-	if(patiant.code < 0)
+	if(patiant.code < 0 || GetPatiantByCode(patiant.code , &patiant) == 1)
 	{
 		printf("\nCodigo invalido!");
 		return;
@@ -351,12 +491,40 @@ void PatiantRegistration()
 	else printf("\nErro no cadastro. \nTente novamente!");
 }
 
+int PatiantIsTreating( int code )
+{
+	int i;
+	
+	Treatment treatment;
+	
+	for(i = 0; i < GetQtyTreatment(); i++)
+	{
+		if(GetTreatmentByIndice(i , &treatment) == 0)
+		{
+			printf("\nIndice invalido");
+			return 0;
+		}
+
+		
+		if(treatment.patiantCode == code)
+			return 1;
+	}
+	
+	return 0;
+}
+
 void DeletePatiantCode()
 {
 	int code;
 	printf("\nDigite o codigo do paciente que voce deseja deletar: ");
 	printf("-> ");
 	scanf("%d", &code);
+	
+	if(PatiantIsTreating( code ) == 1)
+	{
+		printf("\nPaciente esta sendo usada em um tratamento!");
+		return;
+	}
 
 	int successful = PatiantRemoveByCode(code);
 
@@ -364,12 +532,53 @@ void DeletePatiantCode()
 	else printf("\nErro na remocao. \nTente novamente!");
 }
 
+int patiantNameIsTreating( char* name )
+{
+	int i;
+	
+	Treatment treatment;
+	Patiant patiant;
+	
+	for(i = 0; i < GetQtyTreatment(); i++)
+	{
+		if(GetTreatmentByIndice(i , &treatment) == 0)
+		{
+			printf("\nIndice invalido");
+			return 0;
+		}
+	
+		if(GetPatiantByCode(treatment.patiantCode , &patiant) == 0)
+		{
+			printf("\nCodigo invalido");
+			return 0;
+		}
+		
+		if(strcmp(patiant.name, name) == 0)
+			return 1;
+	}
+	
+	return 0;
+}
+
 void DeletePatiantName()
 {
+	if(GetQtyPatiant() == 0)
+	{
+		printf("\nNenhum Paciente Cadastrado");
+		return;
+	}
+	
+	
 	char name[100];
 	printf("\nDigite o nome do paciente que voce deseja deletar: ");
 	printf("-> ");
-	scanf(" %[\n]s", &name);
+	scanf(" %[^\n]s", &name);
+
+	if(patiantNameIsTreating( name ) == 1)
+	{
+		printf("\nPaciente esta sendo usada em um tratamento!");
+		return;
+	}
 
 	int successful = PatiantRemoveByName(name);
 
@@ -391,7 +600,7 @@ void PatiantUpd()
 	printf("-> ");
 	scanf("%d", &patiant.code);
 
-	if(GetPatiantByCode(patiant.code).code != patiant.code || patiant.code < 0)
+	if(GetPatiantByCode(patiant.code , &patiant) == 0)
 	{
 		printf("\nCodigo invalido!");
 		return;
@@ -411,7 +620,7 @@ void PatiantUpd()
 
 	int successful = PatiantUpdate(patiant);
 
-	if(successful) printf("\Paciente Atualizado com sucesso!");
+	if(successful) printf("\nPaciente Atualizado com sucesso!");
 	else printf("\nErro na atualizacao. \nTente novamente!");
 }
 
@@ -431,7 +640,12 @@ void TreatmentListPacient()
 	printf("\n-> ");
 	scanf("%d", &code);
 	
-	Patiant patiant = GetPatiantByCode(code);
+	Patiant patiant;
+	
+	if(GetPatiantByCode(code , &patiant) == 0)
+	{
+		printf("Indice invalido");
+	}
 	
 	if(patiant.code != code || code < 0)
 	{
@@ -439,17 +653,69 @@ void TreatmentListPacient()
 		return;	
 	}
 	
-	printf("\n\nCode - Code Bruxo - Code Pocao - Code Paciente - Duracao - Dosagem ");
 	for (i = 0; i < GetQtyTreatment(); i++)
 	{
-		Treatment treatment = GetTreatmentByIndice(i);
+		Treatment treatment;
 		
-		if(treatment.patiantCode == code)
-		printf("\n %d - %d - %d - %d - %d - %d ", 
+		if(GetTreatmentByIndice(i , &treatment) == 0 )
+		{
+			printf("\nIndice invalido");
+			return;
+		}
+				
+		if(patiant.code == treatment.patiantCode)
+		{
+			break;
+		}
+		
+		if(i == GetQtyTreatment() - 1)
+		{
+			printf("\nPaciente sem tratamento!");
+			return;
+		}
+	}	
+	
+	printf("\n\nCode - Nome Bruxo - Nome Pocao - Nome Paciente - Duracao - Dosagem ");
+	for (i = 0; i < GetQtyTreatment(); i++)
+	{
+		Treatment treatment;
+		
+		if(GetTreatmentByIndice(i , &treatment) == 0 )
+		{
+			printf("\nIndice invalido");
+			return;
+		}
+
+		Witcher witcher;
+		
+		if(GetWitcherByCode(treatment.witcherCode , &witcher) == 0 )
+		{
+			printf("\nCodigo invalido");
+			return;
+		}
+		
+		Potion potion;
+		
+		if(GetPotionByCode(treatment.potionCode , &potion) == 0 )
+		{
+			printf("\nCodigo invalido");
+			return;
+		}
+
+		Patiant patiant;
+		
+		if(GetPatiantByCode(treatment.patiantCode , &patiant) == 0 )
+		{
+			printf("\nCodigo invalido");
+			return;
+		}				
+		
+		if(treatment.witcherCode == code)
+		printf("\n %d - %s - %s - %s - %d - %d ", 
 			treatment.code,
-			treatment.witcherCode,
-			treatment.potionCode,
-			treatment.patiantCode,
+			witcher.name,
+			potion.name,
+			patiant.name,
 			treatment.duration,
 			treatment.dosage			
 		);
@@ -472,25 +738,69 @@ void WitcherPatiantsList()
 	printf("-> ");
 	scanf("%d", &code);
 
-	Witcher witcher = GetWitcherByCode(code);
+	Witcher witcher;
 	
-	if(witcher.code != code || code < 0)
+	if(GetWitcherByCode(code, &witcher) == 0)
 	{
 		printf("Codigo invalido! \n");
 		return;	
 	}
-
-	printf("\n\nCode - Code Bruxo - Code Pocao - Code Paciente - Duracao - Dosagem ");
+	
 	for (i = 0; i < GetQtyTreatment(); i++)
 	{
-		Treatment treatment = GetTreatmentByIndice(i);
+		Treatment treatment;
+		
+		if(GetTreatmentByIndice(i , &treatment) == 0 )
+		{
+			printf("\nIndice invalido");
+			return;
+		}
+				
+		if(witcher.code == treatment.witcherCode)
+		{
+			break;
+		}
+		
+		if(i == GetQtyTreatment() - 1)
+		{
+			printf("\nbruxo sem tratamento!");
+			return;
+		}
+	}
+
+	printf("\n\nCode - Nome Bruxo - Nome Pocao - Nome Paciente - Duracao - Dosagem ");
+	for (i = 0; i < GetQtyTreatment(); i++)
+	{
+		Treatment treatment;
+		
+		if(GetTreatmentByIndice(i , &treatment) == 0 )
+		{
+			printf("\nIndice invalido");
+			return;
+		}
+		
+		Potion potion;
+		
+		if(GetPotionByCode(treatment.potionCode , &potion) == 0 )
+		{
+			printf("\nCodigo invalido");
+			return;
+		}
+
+		Patiant patiant;
+		
+		if(GetPatiantByCode(treatment.patiantCode , &patiant) == 0 )
+		{
+			printf("\nCodigo invalido");
+			return;
+		}				
 		
 		if(treatment.witcherCode == code)
-		printf("\n %d - %d - %d - %d - %d - %d ", 
+		printf("\n %d - %s - %s - %s - %d - %d ", 
 			treatment.code,
-			treatment.witcherCode,
-			treatment.potionCode,
-			treatment.patiantCode,
+			witcher.name,
+			potion.name,
+			patiant.name,
 			treatment.duration,
 			treatment.dosage			
 		);
@@ -512,7 +822,7 @@ void TreatmentRegistration()
 	printf("-> ");
 	scanf("%d", &treatment.code);
 
-	if(treatment.code < 0)
+	if(treatment.code < 0 || GetTreatmentByCode(treatment.code, &treatment) == 1)
 	{
 		printf("\nCodigo invalido!");
 		return;
@@ -523,9 +833,9 @@ void TreatmentRegistration()
 	printf("-> ");
 	scanf("%d", &treatment.witcherCode);
 
-	Witcher witcher = GetWitcherByCode(treatment.witcherCode);
+	Witcher witcher;
 
-	if(witcher.code != treatment.witcherCode)
+	if(GetWitcherByCode(treatment.witcherCode , &witcher) == 0)
 	{
 		printf("Codigo invalido! \n");
 		return;	
@@ -536,8 +846,14 @@ void TreatmentRegistration()
 	printf("-> ");
 	scanf("%d", &treatment.potionCode);
 
-	Potion potion = GetPotionByCode(treatment.potionCode);
-
+	Potion potion;
+	
+	if(GetPotionByCode(treatment.potionCode , &potion) == 0)
+	{
+		printf("Codigo invalido! \n");
+		return;	
+	}
+	
 	if(potion.code != treatment.potionCode)
 	{
 		printf("Codigo invalido! \n");
@@ -549,9 +865,9 @@ void TreatmentRegistration()
 	printf("-> ");
 	scanf("%d", &treatment.patiantCode);
 
-	Patiant patiant = GetPatiantByCode(treatment.patiantCode);
+	Patiant patiant;
 	
-	if(patiant.code != treatment.patiantCode)
+	if(GetPatiantByCode(treatment.patiantCode , &patiant) == 0)
 	{
 		printf("Codigo invalido! \n");
 		return;	
@@ -585,13 +901,11 @@ void TreatmentApliation()
 	printf("\n-> ");
 	scanf("%d", &code);
 
-	Treatment treatment = GetTreatmentByCode(code);
-
-	printf("\n %d e %d ", treatment.code , code); //log
-
-	if(treatment.code != code || code < 0)
+	Treatment treatment;
+	
+	if(GetTreatmentByCode(code , &treatment) == 0)
 	{
-		printf("\nCodigo invalido!");
+		printf("Codigo invalido! \n");
 		return;	
 	}
 
@@ -618,13 +932,12 @@ void DeleteTreatment()
 		return;
 	}
 	
-	
 	int code;
 	printf("\nDigite o codigo do Tratamento que voce deseja deletar: ");
 	printf("\n-> ");
-	scanf("%d", &code);
+	scanf(" %d", &code);
 
-	int successful = TreatmentRemove(code);
+	int successful = TreatmentRemoveByCode(code);
 
 	if(successful) printf("\nTratamento Removido com sucesso!");
 	else printf("\nErro na remocao. \nTente novamente!");
@@ -762,4 +1075,3 @@ int main(int argc, char *argv[])
 	
 	return 0;
 }
-

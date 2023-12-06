@@ -1,170 +1,196 @@
 #include "pocao.h"
 #include <stdlib.h>
-#include <string.h> //debug
+#include <stdio.h>
+#include <string.h>
 
-int TAM_POTION = 5;
 int qtyPotions = 0;
 
-Potion* Potions = NULL;
+FILE *potionFile;
 
 int StartPotions()
 {
-    Potions = (Potion*) malloc(TAM_POTION * sizeof(Potion));
+	potionFile = fopen("PocaoArq.txt", "r+b");
 
+	if(potionFile == NULL)
+	{
+		potionFile = fopen("PocaoArq.txt", "w+b");	
 
-//  debug
-//	qtyPotions = 3;
-//
-//	Potions[0].code = 1;
-//	strcpy(Potions[0].type, "Liquido");
-//	strcpy(Potions[0].name, "Red bull");
-//	
-//	Potions[1].code = 2;
-//	strcpy(Potions[1].type, "Pilula") ;
-//	strcpy(Potions[1].name, "Fanta Uva");
-//
-//	Potions[2].code = 3;
-//	strcpy(Potions[2].type, "Erva") ;
-//	strcpy(Potions[2].name, "Astralopitecos Australiano");
+		if(potionFile == NULL)
+			return 0;
+	}
 
-    return 1;		
+	fseek(potionFile, 0, SEEK_END);
+	
+	qtyPotions = ftell(potionFile) / sizeof(Potion);
+	
+	rewind(potionFile);
+
+    return 1;
 }
 
 int ShutdownPotions()
 {
-	free(Potions);
+	fclose(potionFile);
+	
 	return 1;
 }
 
-//register
 int PotionRegister(Potion potion)
-{
-    Potion* PotionAllocTemp = NULL;
+{ 
+    qtyPotions++;
 
-    Potions[qtyPotions] = potion;
- 
-     qtyPotions++;
+	rewind(potionFile);
+
+	fseek(potionFile, 0, SEEK_END);
+	
+	int result;		
+
+	result = fwrite(&potion, sizeof(Potion), 1 , potionFile);
     
-	if(qtyPotions == TAM_POTION)
-	{
-		TAM_POTION += 5;
-    	PotionAllocTemp = (Potion*) realloc(Potions , TAM_POTION * sizeof(Potion));
-
-	    if(PotionAllocTemp == NULL)
-	    {
-	    	qtyPotions--;
-	    	TAM_POTION -= 5;
-	        return 0;
-		}
-
-	    Potions = PotionAllocTemp;
-	}
+    if(!result)
+		return 0;
     
     return 1;
 }
 
-int PotionRemove(int indice)
+int PotionRemove(Potion potion)
 {
-    Potion* PotionAllocTemp = NULL;	
-	
-    qtyPotions--;
+	FILE* temp;
 
-    Potions[indice] = Potions[qtyPotions];
+	temp = fopen("temp.txt", "w+b");
 
-	if(TAM_POTION != 5 && qtyPotions < TAM_POTION -5 )
+	if(temp == NULL)
 	{
-		TAM_POTION -= 5;
-        PotionAllocTemp = (Potion*) realloc(Potions , TAM_POTION * sizeof(Potion));	            
+		return 0;
+	}
 
-        if(PotionAllocTemp == NULL)
-        {
-            qtyPotions++;
-            TAM_POTION += 5;
-            return 0;
-        }
-
-        Potions = PotionAllocTemp;
-	}		
-}
-
-//remove
-int PotionRemoveByCode(int code)
-{
     int i;
 
-    for (i = 0; i < qtyPotions; i++)
-    {
-        if(Potions[i].code == code)
-        {
-			PotionRemove(i);
+    Potion tempPotion;
 
-            return 1;
-        }
-    }    
-    
-    return 0;
+	rewind(potionFile);
+
+    for(i = 0; i < qtyPotions; i++)
+    {
+    	fread(&tempPotion , sizeof(Potion) , 1 , potionFile );
+
+    	if( tempPotion.code != potion.code)
+    		fwrite(&tempPotion, sizeof(Potion), 1 , temp );
+	}
+
+	fclose(potionFile);
+
+	remove("PocaoArq.txt");
+
+	fclose(temp);
+
+	rename("temp.txt", "PocaoArq.txt");
+
+	potionFile = fopen("PocaoArq.txt", "r+b");
+
+	if(potionFile == NULL)
+		return 0;
+
+    qtyPotions--;
+
+    return 1;
+}
+
+int PotionRemoveByCode(int code)
+{
+	Potion temp;
+	
+	if(!GetPotionByCode(code, &temp))
+		return 0;
+
+	PotionRemove(temp);
+
+    return 1;
 }
 
 int PotionRemoveByName(char* name)
 {
+	rewind(potionFile);
+	
+	Potion temp;
+	
     int i;
-
     for (i = 0; i < qtyPotions; i++)
-    {
-        if(strcmp(Potions[i].name, name)== 0)
+    {	
+   		fread(&temp, sizeof(Potion), 1, potionFile);
+		
+        if(strcmp(temp.name , name) == 0)
         {
-        	PotionRemove(i);
+			PotionRemove(temp);
             return 1;
         }
-    }    
+    }
+
     return 0;
 }
 
-//receive
-Potion GetPotionByIndice(int indice)
+int GetPotionByIndice(int indice , Potion* potion)
 {
-    if(indice > qtyPotions) return;
+    if(indice >= qtyPotions) return 0;
+
+	rewind(potionFile);
+	
+	if( indice != 0 )
+		fseek(potionFile, sizeof(Potion)*(indice), SEEK_SET);
+	
+	Potion temp;
     
-    return Potions[indice];
+	fread(&temp, sizeof(Potion), 1, potionFile);
+
+	*potion = temp;
+
+	return 1;
 }
 
-Potion GetPotionByCode(int code)
+int GetPotionByCode(int code , Potion* potion)
 {    
-	Potion potion;
-	potion.code = -1;
+	rewind(potionFile);
+
+	Potion temp;
 
     int i;
-
     for (i = 0; i < qtyPotions; i++)
-    {
-        if(Potions[i].code == code)
+    {	
+   		fread(&temp, sizeof(Potion), 1, potionFile);
+		
+        if(temp.code == code)
         {
-            return Potions[i];
+			*potion = temp;
+            return 1;
         }
     }    
     
-    return potion;
+    return 0;
 }
 
-//qty receive
 int GetQtyPotion()
 {
     return qtyPotions;
 }
 
 int PotionUpdate(Potion potion)
-{
+{	
+	rewind(potionFile);	
+	Potion tempPotion;
+	
 	int i;
-	
 	for(i = 0; i < qtyPotions; i++)
-	if(Potions[i].code == potion.code)
 	{
-		strcpy(Potions[i].name, potion.name);
-		strcpy(Potions[i].type, potion.type);
-	
-		return 1;
-	}
-	
-	return 0;	
-}
+		fread(&tempPotion, sizeof(Potion), 1 , potionFile);
+				
+		if(tempPotion.code == potion.code)
+		{
+			fseek(potionFile, sizeof(Potion)*i, SEEK_SET);
 
+			fwrite(&potion, sizeof(Potion), 1, potionFile);
+
+			return 1;		
+		}
+	}
+	return 0;
+}

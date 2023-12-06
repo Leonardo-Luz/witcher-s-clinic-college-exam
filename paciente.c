@@ -1,173 +1,196 @@
 #include "paciente.h"
 #include <stdlib.h>
-#include <string.h> //debug
+#include <stdio.h>
+#include <string.h>
 
-int TAM_PATIANT = 5;
 int qtyPatiants = 0;
 
-Patiant* Patiants = NULL;
+FILE *patiantFile;
 
 int StartPatiants()
 {
-    Patiants = (Patiant*) malloc(TAM_PATIANT * sizeof(Patiant));
+	patiantFile = fopen("PacienteArq.txt", "r+b");
 
-//  debug
-//	qtyPatiants = 3;
-//
-//	Patiants[0].code = 1;
-//    Patiants[0].age = 999;
-//    Patiants[0].height = 111.80;    
-//	strcpy(Patiants[0].name, "Carlos");
-//	
-//	Patiants[1].code = 2;
-//    Patiants[1].age = 23;
-//    Patiants[1].height = 1.20;    
-//	strcpy(Patiants[1].name, "Diego");
-//
-//	Patiants[2].code = 3;
-//    Patiants[2].age = 21;
-//    Patiants[2].height = 1.90;    
-//	strcpy(Patiants[2].name, "Leonardo");
+	if(patiantFile == NULL)
+	{
+		patiantFile = fopen("PacienteArq.txt", "w+b");	
 
-    return 1;		
+		if(patiantFile == NULL)
+			return 0;
+	}
+
+	fseek(patiantFile, 0, SEEK_END);
+	
+	qtyPatiants = ftell(patiantFile) / sizeof(Patiant);
+	
+	rewind(patiantFile);
+
+    return 1;
 }
 
 int ShutdownPatiants()
 {
-	free(Patiants);
+	fclose(patiantFile);
+	
 	return 1;
 }
 
-//register
 int PatiantRegister(Patiant patiant)
-{
-    Patiant* PatiantAllocTemp = NULL;
+{ 
+    qtyPatiants++;
 
-    Patiants[qtyPatiants] = patiant;
- 
-     qtyPatiants++;
+	rewind(patiantFile);
+
+	fseek(patiantFile, 0, SEEK_END);
+	
+	int result;		
+
+	result = fwrite(&patiant, sizeof(Patiant), 1 , patiantFile);
     
-	if(qtyPatiants == TAM_PATIANT)
-	{
-		TAM_PATIANT += 5;
-    	PatiantAllocTemp = (Patiant*) realloc(Patiants , TAM_PATIANT * sizeof(Patiant));
-
-	    if(PatiantAllocTemp == NULL)
-	    {
-	    	qtyPatiants--;
-	    	TAM_PATIANT -= 5;
-	        return 0;
-		}
-
-	    Patiants = PatiantAllocTemp;
-	}
+    if(!result)
+		return 0;
     
     return 1;
 }
 
-int PatiantRemove(int indice)
+int PatiantRemove(Patiant patiant)
 {
-    Patiant* PatiantAllocTemp = NULL;	
-	
-    qtyPatiants--;
+	FILE* temp;
 
-    Patiants[indice] = Patiants[qtyPatiants];
+	temp = fopen("temp.txt", "w+b");
 
-	if(TAM_PATIANT != 5 && qtyPatiants < TAM_PATIANT -5 )
+	if(temp == NULL)
 	{
-		TAM_PATIANT -= 5;
-        PatiantAllocTemp = (Patiant*) realloc(Patiants , TAM_PATIANT * sizeof(Patiant));	            
+		return 0;
+	}
 
-        if(PatiantAllocTemp == NULL)
-        {
-            qtyPatiants++;
-            TAM_PATIANT += 5;
-            return 0;
-        }
-
-        Patiants = PatiantAllocTemp;
-	}		
-}
-
-//remove
-int PatiantRemoveByCode(int code)
-{
     int i;
 
-    for (i = 0; i < qtyPatiants; i++)
-    {
-        if(Patiants[i].code == code)
-        {
-			PatiantRemove(i);
+    Patiant tempPatiant;
 
-            return 1;
-        }
-    }    
-    
-    return 0;
+	rewind(patiantFile);
+
+    for(i = 0; i < qtyPatiants; i++)
+    {
+    	fread(&tempPatiant , sizeof(Patiant) , 1 , patiantFile );
+
+    	if( tempPatiant.code != patiant.code)
+    		fwrite(&tempPatiant, sizeof(Patiant), 1 , temp );
+	}
+
+	fclose(patiantFile);
+
+	remove("PacienteArq.txt");
+
+	fclose(temp);
+
+	rename("temp.txt", "PacienteArq.txt");
+
+	patiantFile = fopen("PacienteArq.txt", "r+b");
+
+	if(patiantFile == NULL)
+		return 0;
+
+    qtyPatiants--;
+
+    return 1;
+}
+
+int PatiantRemoveByCode(int code)
+{
+	Patiant temp;
+	
+	if(!GetPatiantByCode(code, &temp))
+		return 0;
+
+	PatiantRemove(temp);
+
+    return 1;
 }
 
 int PatiantRemoveByName(char* name)
 {
+	rewind(patiantFile);
+	
+	Patiant temp;
+	
     int i;
-
     for (i = 0; i < qtyPatiants; i++)
-    {
-        if(strcmp(Patiants[i].name, name)== 0)
+    {	
+   		fread(&temp, sizeof(Patiant), 1, patiantFile);
+		
+        if(strcmp(temp.name , name) == 0)
         {
-        	PatiantRemove(i);
+			PatiantRemove(temp);
             return 1;
         }
-    }    
+    }
+
     return 0;
 }
 
-//receive
-Patiant GetPatiantByIndice(int indice)
+int GetPatiantByIndice(int indice , Patiant* patiant)
 {
-    if(indice > qtyPatiants) return;
+    if(indice >= qtyPatiants) return 0;
+
+	rewind(patiantFile);
+	
+	if( indice != 0 )
+		fseek(patiantFile, sizeof(Patiant)*(indice), SEEK_SET);
+	
+	Patiant temp;
     
-    return Patiants[indice];
+	fread(&temp, sizeof(Patiant), 1, patiantFile);
+
+	*patiant = temp;
+
+	return 1;
 }
 
-Patiant GetPatiantByCode(int code)
+int GetPatiantByCode(int code , Patiant* patiant)
 {    
-	Patiant patiant;
-	patiant.code = -1;
+	rewind(patiantFile);
+
+	Patiant temp;
 
     int i;
-
     for (i = 0; i < qtyPatiants; i++)
-    {
-        if(Patiants[i].code == code)
+    {	
+   		fread(&temp, sizeof(Patiant), 1, patiantFile);
+		
+        if(temp.code == code)
         {
-            return Patiants[i];
+			*patiant = temp;
+            return 1;
         }
     }    
     
-    return patiant;
+    return 0;
 }
 
-//qty receive
 int GetQtyPatiant()
 {
     return qtyPatiants;
 }
 
 int PatiantUpdate(Patiant patiant)
-{
+{	
+	rewind(patiantFile);	
+	Patiant tempPatiant;
+	
 	int i;
-	
 	for(i = 0; i < qtyPatiants; i++)
-	if(Patiants[i].code == patiant.code)
 	{
-		strcpy(Patiants[i].name, patiant.name);
-		Patiants[i].height = patiant.height;
-		Patiants[i].age = patiant.age;
-	
-		return 1;
-	}
-	
-	return 0;	
-}
+		fread(&tempPatiant, sizeof(Patiant), 1 , patiantFile);
+				
+		if(tempPatiant.code == patiant.code)
+		{
+			fseek(patiantFile, sizeof(Patiant)*i, SEEK_SET);
 
+			fwrite(&patiant, sizeof(Patiant), 1, patiantFile);
+
+			return 1;		
+		}
+	}
+	return 0;
+}

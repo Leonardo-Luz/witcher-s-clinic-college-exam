@@ -10,8 +10,8 @@ int ShutdownWitchers();
 int WitcherRegister(Witcher witcher);
 int WitcherRemoveByCode(int code);
 int WitcherRemoveByName(char* name);
-Witcher GetWitcherByIndice(int indice);
-Witcher GetWitcherByCode(int code);
+int GetWitcherByIndice(int indice, Witcher* witcher);
+int GetWitcherByCode(int code, Witcher* witcher);
 
 int GetQtyWitcher();
 int WitcherUpdate(Witcher witcher);
