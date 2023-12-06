@@ -580,6 +580,12 @@ void DeletePatiantName()
 		return;
 	}
 
+	if(patiantNameIsTreating( name ) == 1)
+	{
+		printf("\nPaciente esta sendo usada em um tratamento!");
+		return;
+	}
+
 	int successful = PatiantRemoveByName(name);
 
 	if(successful) printf("\nPaciente Removido com sucesso!");
@@ -837,7 +843,7 @@ void TreatmentRegistration()
 
 	if(GetWitcherByCode(treatment.witcherCode , &witcher) == 0)
 	{
-		printf("Codigo invalido! \n");
+		printf("\nCodigo invalido! \n");
 		return;	
 	}
 
@@ -856,7 +862,7 @@ void TreatmentRegistration()
 	
 	if(potion.code != treatment.potionCode)
 	{
-		printf("Codigo invalido! \n");
+		printf("\nCodigo invalido! \n");
 		return;	
 	}
 
@@ -869,7 +875,7 @@ void TreatmentRegistration()
 	
 	if(GetPatiantByCode(treatment.patiantCode , &patiant) == 0)
 	{
-		printf("Codigo invalido! \n");
+		printf("\nCodigo invalido! \n");
 		return;	
 	}
 
@@ -908,6 +914,9 @@ void TreatmentApliation()
 		printf("Codigo invalido! \n");
 		return;	
 	}
+	
+	printf("\n %d e %d ", treatment.code , code); //log
+
 
 	printf("\nDigite a nova duracao:");
 	printf("\n-> ");
